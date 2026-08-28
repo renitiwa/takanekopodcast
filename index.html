@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>たかねこPodcast supported by たかねこちゃんねる技術部</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* フォント設定 */
+        @font-face {
+            font-family: 'GenEiLateMinP';
+            src: url('GenEiLateMinP_v2.ttf') format('truetype');
+        }
+
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #2b2b2b;
+            --accent-color: #e63946;
+            --card-bg: #ffffff;
+            --sub-text-color: #666666;
+            --success-color: #2a9d8f;
+        }
+
+        body {
+            font-family: 'GenEiLateMinP', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* ヘッダー */
+        header {
+            background: var(--card-bg);
+            padding: 1.2rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-main-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .header-sub-title {
+            font-size: 0.8rem;
+            color: var(--sub-text-color);
+            margin-top: 2px;
+        }
+
+        nav a {
+            margin-left: 1.5rem;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+        }
+
+        /* セクション共通 */
+        section {
+            padding: 3.5rem 1.5rem;
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        /* トップ */
+        .hero {
+            text-align: center;
+            padding: 5rem 1.5rem;
+        }
+
+        .hero-main-title {
+            font-size: 2.6rem;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .hero-sub-title {
+            font-size: 1.15rem;
+            color: var(--sub-text-color);
+            margin-top: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .platform-links {
+            display: flex;
+            justify-content: center;
+            gap: 3.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .platform-links a {
+            font-size: 3.8rem;
+            transition: transform 0.2s ease;
+            display: inline-block;
+        }
+
+        .platform-links a:hover {
+            transform: scale(1.12);
+        }
+
+        .fa-spotify { color: #1DB954; }
+        .fa-youtube { color: #FF0000; }
+
+        /* カード */
+        .card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.6rem;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.4rem;
+            display: inline-block;
+        }
+
+        /* フォーム */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .required {
+            color: var(--accent-color);
+            font-size: 0.85em;
+            margin-left: 0.4em;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            box-sizing: border-box;
+            font-size: 1rem;
+            background-color: #fafafa;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background-color: #ffffff;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 180px;
+        }
+
+        button {
+            background-color: var(--text-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.05rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: var(--accent-color);
+        }
+
+        button:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        /* お知らせ・ステータス表示 */
+        #form-status {
+            display: none;
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status-success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+            border: 1px solid #c8e6c9;
+        }
+
+        .status-error {
+            background-color: #ffebee;
+            color: var(--accent-color);
+            border: 1px solid #ffcdd2;
+        }
+
+        #closed-message {
+            text-align: center;
+            color: var(--sub-text-color);
+            padding: 3rem 1.5rem;
+            background: #f1f3f5;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+        }
+
+        #theme-display {
+            background: #fff5f5;
+            padding: 1.2rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+            margin-bottom: 1.8rem;
+            font-weight: bold;
+        }
+
+        /* フッター（クレジット） */
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            font-size: 0.75rem;
+            color: var(--sub-text-color);
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title-container">
+            <span class="header-main-title">たかねこPodcast</span>
+            <span class="header-sub-title">supported by たかねこちゃんねる技術部</span>
+        </div>
+        <nav>
+            <a href="#top">トップ</a>
+            <a href="#contact">お便り</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="top" class="hero">
+            <h1 class="hero-main-title">たかねこPodcast</h1>
+            <div class="hero-sub-title">supported by たかねこちゃんねる技術部</div>
+            <p>最新エピソードはこちらのプラットフォームから配信中！</p>
+            <div class="platform-links">
+                <a href="https://open.spotify.com/show/6Uov8GjlFlXDbA270FfgAc?si=SV0vQpAHTMmNTpihEoueug" target="_blank" title="Spotifyで聴く"><i class="fa-brands fa-spotify"></i></a>
+                <a href="https://youtube.com/playlist?list=PLN_AW2-W6mpc&si=weXLnyEQoiWzwYmC" target="_blank" title="YouTubeで聴く"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="card">
+                <h2>お便りを送る</h2>
+                
+                <div id="theme-display"></div>
+                
+                <div id="closed-message">
+                    現在、お便りの募集はお休みしています。<br>次回の募集再開をお待ちください！
+                </div>
+
+                <form id="letter-form">
+                    <div class="form-group">
+                        <label for="podcast-name">ポッドキャストネーム <span class="required">*必須</span></label>
+                        <input type="text" id="podcast-name" required placeholder="例：ラジオネーム たかねこ">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="letter-content">お便りの内容 <span class="required">*必須</span></label>
+                        <textarea id="letter-content" required placeholder="テーマの回答や、質問・感想など自由にお書きください！"></textarea>
+                    </div>
+                    
+                    <button type="submit" id="submit-btn">この内容でお便りを送る</button>
+                    <div id="form-status"></div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© たかねこちゃんねる技術部</p>
+    </footer>
+
+    <script>
+        // ==============================================================
+        // ⚙️ 設定エリア（ここを変更して管理します）
+        // ==============================================================
+
+        // 1. お便り募集の切り替え (true = 募集する / false = お休み)
+        const isAcceptingLetters = true; 
+
+        // 2. 現在の募集テーマ
+        const currentTheme = "現在のテーマ：「最近ハマっていること」や「番組へのメッセージ」など何でも募集中！";
+
+        // 3. お便りを受信するメールアドレス
+        const targetEmailAddress = "takanekopodcast@outlook.jp"; 
+
+        // ==============================================================
+
+        // 初期表示設定
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeDisplay = document.getElementById('theme-display');
+            const letterForm = document.getElementById('letter-form');
+            const closedMessage = document.getElementById('closed-message');
+
+            themeDisplay.textContent = currentTheme;
+
+            if (isAcceptingLetters) {
+                letterForm.style.display = 'block';
+                closedMessage.style.display = 'none';
+                themeDisplay.style.display = 'block';
+            } else {
+                letterForm.style.display = 'none';
+                closedMessage.style.display = 'block';
+                themeDisplay.style.display = 'none';
+            }
+        });
+
+        // フォーム送信処理（裏側で直接メール送信）
+        document.getElementById('letter-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const btn = document.getElementById('submit-btn');
+            const status = document.getElementById('form-status');
+            const name = document.getElementById('podcast-name').value;
+            const content = document.getElementById('letter-content').value;
+
+            // 送信中のUI制御
+            btn.disabled = true;
+            btn.textContent = 'お便りを送信中...';
+            status.style.display = 'none';
+            status.className = '';
+
+            // 送信データの作成
+            const formData = new FormData();
+            formData.append('ポッドキャストネーム', name);
+            formData.append('お便り本文', content);
+            formData.append('_subject', `【お便り】${name} 様より（たかねこPodcast）`);
+            formData.append('_captcha', 'false'); // ロボット認証画面を挟まず即送信
+
+            try {
+                const response = await fetch(`https://formsubmit.co/ajax/${targetEmailAddress}`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    status.className = 'status-success';
+                    status.textContent = '✨ お便りを送信しました！ありがとうございます！';
+                    status.style.display = 'block';
+                    document.getElementById('letter-form').reset();
+                } else {
+                    throw new Error('送信エラー');
+                }
+            } catch (error) {
+                status.className = 'status-error';
+                status.textContent = '⚠️ 送信に失敗しました。時間をおいてもう一度お試しください。';
+                status.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'この内容でお便りを送る';
+            }
+        });
+    </script>
+</body>
+</html>
