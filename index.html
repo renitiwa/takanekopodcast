@@ -6,14 +6,17 @@
     <title>たかねこPodcast supported by たかねこちゃんねる技術部</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- 画像化ライブラリの読み込み -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
     <style>
-        /* フォント設定 */
+        /* ベースフォント設定 */
         @font-face {
             font-family: 'GenEiLateMinP';
             src: url('GenEiLateMinP_v2.ttf') format('truetype');
+        }
+
+        /* たかねこ辞典ボタン専用フォント設定 */
+        @font-face {
+            font-family: 'KeiFont';
+            src: url('keifont.ttf') format('truetype');
         }
 
         :root {
@@ -254,70 +257,6 @@
             font-weight: bold;
         }
 
-        /* ====================================================
-           📸 画像生成用の隠しレイアウト
-           ※ 完全に画面外にすると描画されないブラウザがあるため、
-             画面左上に固定しつつ、透明にして見えなくする対策
-           ==================================================== */
-        #capture-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -9999;
-            opacity: 0.01;
-            pointer-events: none;
-        }
-
-        #capture-area {
-            width: 800px; /* 画像の横幅 */
-            height: max-content; /* 内容に合わせて高さを自動調整 */
-            background-color: #ffffff;
-            padding: 50px;
-            box-sizing: border-box;
-            font-family: 'GenEiLateMinP', sans-serif;
-            color: #2b2b2b;
-        }
-
-        .capture-header {
-            border-bottom: 3px solid var(--accent-color);
-            padding-bottom: 15px;
-            margin-bottom: 35px;
-        }
-
-        .capture-main-title {
-            font-size: 2.2rem;
-            font-weight: bold;
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        .capture-sub-title {
-            font-size: 1.1rem;
-            color: #666666;
-            margin-top: 5px;
-        }
-
-        .capture-label {
-            font-size: 1rem;
-            color: var(--accent-color);
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .capture-name-box {
-            margin-bottom: 30px;
-            font-size: 1.6rem;
-            font-weight: bold;
-        }
-
-        .capture-content-box {
-            font-size: 1.3rem;
-            line-height: 1.8;
-            white-space: pre-wrap; /* 改行をそのまま反映 */
-            word-wrap: break-word;
-        }
-
         /* フッター */
         footer {
             text-align: center;
@@ -326,9 +265,57 @@
             color: var(--sub-text-color);
             letter-spacing: 0.05em;
         }
+
+        /* ====================================================
+           📖 たかねこ辞典ボタン（画面左側に固定）
+           ==================================================== */
+        .dict-floating-btn {
+            position: fixed;
+            left: -5px;
+            top: 130px;
+            background-color: var(--text-color);
+            color: #ffffff;
+            padding: 12px 18px 12px 20px;
+            border-radius: 0 10px 10px 0;
+            text-decoration: none;
+            /* ここでご指定の keifont を適用 */
+            font-family: 'KeiFont', sans-serif; 
+            font-size: 1.2rem;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dict-floating-btn:hover {
+            transform: translateX(5px);
+            background-color: var(--accent-color);
+        }
+
+        /* スマホ向けに位置と形を調整 */
+        @media (max-width: 600px) {
+            .dict-floating-btn {
+                top: auto;
+                bottom: 20px;
+                left: 15px;
+                border-radius: 50px;
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            .dict-floating-btn:hover {
+                transform: translateY(-3px);
+            }
+        }
     </style>
 </head>
 <body>
+
+    <!-- 📖 たかねこ辞典 リンクボタン -->
+    <a href="https://takanekoarchive.vercel.app/" target="_blank" class="dict-floating-btn">
+        <i class="fa-solid fa-book"></i> たかねこ辞典
+    </a>
 
     <header>
         <div class="header-title-container">
@@ -380,37 +367,20 @@
         </section>
     </main>
 
-    <!-- 画像生成用に裏側に配置されるレイアウト（透明化して配置） -->
-    <div id="capture-wrapper">
-        <div id="capture-area">
-            <div class="capture-header">
-                <div class="capture-main-title">たかねこPodcast</div>
-                <div class="capture-sub-title">supported by たかねこちゃんねる技術部</div>
-            </div>
-            <div class="capture-name-box">
-                <span class="capture-label">■ ポッドキャストネーム</span>
-                <div id="render-name"></div>
-            </div>
-            <div class="capture-content-box">
-                <span class="capture-label">■ お便りの内容</span>
-                <div id="render-content"></div>
-            </div>
-        </div>
-    </div>
-
     <footer>
         <p>© たかねこちゃんねる技術部</p>
     </footer>
 
     <script>
         // ==============================================================
-        // ⚙️ 設定エリア
+        // ⚙️ 設定エリア（ここを変更して管理します）
         // ==============================================================
         const isAcceptingLetters = true; 
         const currentTheme = "今回のテーマ：初恋のエピソード、気になる人や好きな人についてや恋愛相談など恋愛全般を大募集！！！";
         const targetEmailAddress = "takanekopodcast@outlook.jp"; 
         // ==============================================================
 
+        // 初期表示設定
         document.addEventListener('DOMContentLoaded', () => {
             const themeDisplay = document.getElementById('theme-display');
             const letterForm = document.getElementById('letter-form');
@@ -429,7 +399,7 @@
             }
         });
 
-        // フォーム送信＆画像化処理
+        // フォーム送信処理（裏側で直接メール送信）
         document.getElementById('letter-form').addEventListener('submit', async function(event) {
             event.preventDefault();
 
@@ -440,77 +410,39 @@
 
             // 送信中のUI制御
             btn.disabled = true;
-            btn.textContent = 'お便りを画像化中...';
+            btn.textContent = 'お便りを送信中...';
             status.style.display = 'none';
             status.className = '';
 
+            // 送信データの作成
+            const formData = new FormData();
+            formData.append('ポッドキャストネーム', name);
+            formData.append('お便り本文', content);
+            formData.append('_subject', `【お便り】${name} 様より（たかねこPodcast）`);
+            formData.append('_captcha', 'false'); // ロボット認証画面を挟まず即送信
+
             try {
-                // 1. 画像化用の隠し要素に入力されたテキストを流し込む
-                document.getElementById('render-name').textContent = name;
-                document.getElementById('render-content').textContent = content;
-
-                const captureArea = document.getElementById('capture-area');
-
-                // 2. html2canvasで要素を撮影（画像化）
-                const canvas = await html2canvas(captureArea, {
-                    scale: 2, // 高画質化
-                    backgroundColor: '#ffffff',
-                    useCORS: true // フォント等の外部リソース読み込み対策
+                const response = await fetch(`https://formsubmit.co/ajax/${targetEmailAddress}`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
                 });
 
-                btn.textContent = 'メールを送信中...';
-
-                // 3. CanvasをBlob(画像データ)に変換
-                canvas.toBlob(async (blob) => {
-                    
-                    // 🚨 修正ポイント: Blobを正式なFileオブジェクトに変換する
-                    // これによりFormSubmit側で「添付ファイル」として確実に認識されやすくなります。
-                    const imageFile = new File([blob], 'letter_image.png', { type: 'image/png' });
-
-                    // 4. 送信データの作成
-                    const formData = new FormData();
-                    formData.append('ポッドキャストネーム', name);
-                    formData.append('お便り本文', content);
-                    formData.append('お便り画像', imageFile); // Fileオブジェクトを添付
-                    formData.append('_subject', `【お便り】${name} 様より（たかねこPodcast）`);
-                    formData.append('_captcha', 'false');
-                    
-                    // メールを見やすくするためのFormSubmitのオプション
-                    formData.append('_template', 'table'); 
-
-                    try {
-                        // 5. フォーム送信
-                        // 🚨 修正ポイント: fetchの headers を削除。
-                        // FormDataを送信する際、ブラウザが自動的に正しい Content-Type と Boundary を設定してくれるようにするため。
-                        const response = await fetch(`https://formsubmit.co/ajax/${targetEmailAddress}`, {
-                            method: 'POST',
-                            body: formData
-                        });
-
-                        if (response.ok) {
-                            status.className = 'status-success';
-                            status.textContent = '✨ お便りを送信しました！ありがとうございます！';
-                            status.style.display = 'block';
-                            document.getElementById('letter-form').reset();
-                        } else {
-                            throw new Error('送信エラー');
-                        }
-                    } catch (error) {
-                        console.error('送信エラー詳細:', error);
-                        status.className = 'status-error';
-                        status.textContent = '⚠️ 送信に失敗しました。時間をおいてもう一度お試しください。';
-                        status.style.display = 'block';
-                    } finally {
-                        btn.disabled = false;
-                        btn.textContent = 'この内容でお便りを送る';
-                    }
-                }, 'image/png');
-
+                if (response.ok) {
+                    status.className = 'status-success';
+                    status.textContent = '✨ お便りを送信しました！ありがとうございます！';
+                    status.style.display = 'block';
+                    document.getElementById('letter-form').reset();
+                } else {
+                    throw new Error('送信エラー');
+                }
             } catch (error) {
-                console.error('画像生成エラー詳細:', error);
                 status.className = 'status-error';
-                status.textContent = '⚠️ 画像の生成中にエラーが発生しました。';
+                status.textContent = '⚠️ 送信に失敗しました。時間をおいてもう一度お試しください。';
                 status.style.display = 'block';
+            } finally {
                 btn.disabled = false;
                 btn.textContent = 'この内容でお便りを送る';
             }
