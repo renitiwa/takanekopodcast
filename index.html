@@ -255,21 +255,26 @@
         }
 
         /* ====================================================
-           📸 画像生成用の隠しレイアウト（画面外に配置）
+           📸 画像生成用の隠しレイアウト
+           ※ 完全に画面外にすると描画されないブラウザがあるため、
+             画面左上に固定しつつ、透明にして見えなくする対策
            ==================================================== */
         #capture-wrapper {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
+            position: fixed;
+            top: 0;
+            left: 0;
             z-index: -9999;
+            opacity: 0.01;
+            pointer-events: none;
         }
 
         #capture-area {
             width: 800px; /* 画像の横幅 */
+            height: max-content; /* 内容に合わせて高さを自動調整 */
             background-color: #ffffff;
             padding: 50px;
             box-sizing: border-box;
-            font-family: 'GenEiLateMinP', sans-serif; /* フォントを維持 */
+            font-family: 'GenEiLateMinP', sans-serif;
             color: #2b2b2b;
         }
 
@@ -375,7 +380,7 @@
         </section>
     </main>
 
-    <!-- 画像生成用に裏側に配置されるレイアウト（画面には表示されません） -->
+    <!-- 画像生成用に裏側に配置されるレイアウト（透明化して配置） -->
     <div id="capture-wrapper">
         <div id="capture-area">
             <div class="capture-header">
@@ -449,7 +454,8 @@
                 // 2. html2canvasで要素を撮影（画像化）
                 const canvas = await html2canvas(captureArea, {
                     scale: 2, // 高画質化
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    useCORS: true // フォント等の外部リソース読み込み対策
                 });
 
                 btn.textContent = 'メールを送信中...';
@@ -457,22 +463,28 @@
                 // 3. CanvasをBlob(画像データ)に変換
                 canvas.toBlob(async (blob) => {
                     
+                    // 🚨 修正ポイント: Blobを正式なFileオブジェクトに変換する
+                    // これによりFormSubmit側で「添付ファイル」として確実に認識されやすくなります。
+                    const imageFile = new File([blob], 'letter_image.png', { type: 'image/png' });
+
                     // 4. 送信データの作成
                     const formData = new FormData();
-                    formData.append('ポッドキャストネーム', name); // テキストとしても送信
+                    formData.append('ポッドキャストネーム', name);
                     formData.append('お便り本文', content);
-                    formData.append('お便り画像', blob, 'letter.png'); // 📸 画像をファイルとして添付
+                    formData.append('お便り画像', imageFile); // Fileオブジェクトを添付
                     formData.append('_subject', `【お便り】${name} 様より（たかねこPodcast）`);
                     formData.append('_captcha', 'false');
+                    
+                    // メールを見やすくするためのFormSubmitのオプション
+                    formData.append('_template', 'table'); 
 
                     try {
                         // 5. フォーム送信
+                        // 🚨 修正ポイント: fetchの headers を削除。
+                        // FormDataを送信する際、ブラウザが自動的に正しい Content-Type と Boundary を設定してくれるようにするため。
                         const response = await fetch(`https://formsubmit.co/ajax/${targetEmailAddress}`, {
                             method: 'POST',
-                            body: formData,
-                            headers: {
-                                'Accept': 'application/json'
-                            }
+                            body: formData
                         });
 
                         if (response.ok) {
@@ -484,6 +496,7 @@
                             throw new Error('送信エラー');
                         }
                     } catch (error) {
+                        console.error('送信エラー詳細:', error);
                         status.className = 'status-error';
                         status.textContent = '⚠️ 送信に失敗しました。時間をおいてもう一度お試しください。';
                         status.style.display = 'block';
@@ -494,7 +507,7 @@
                 }, 'image/png');
 
             } catch (error) {
-                console.error(error);
+                console.error('画像生成エラー詳細:', error);
                 status.className = 'status-error';
                 status.textContent = '⚠️ 画像の生成中にエラーが発生しました。';
                 status.style.display = 'block';
