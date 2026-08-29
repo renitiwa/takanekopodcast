@@ -32,6 +32,7 @@
             --input-border: #e2e8f0;
             --overlay-color: rgba(30, 10, 50, 0.45);
             --msg-bg: rgba(248, 240, 255, 0.9);
+            --dict-text-color: #000000; /* 辞典の文字色（ライトモードは黒） */
         }
 
         /* 🌙 ダークモード時のカラーパレット */
@@ -45,6 +46,7 @@
             --input-border: #4a306d;
             --overlay-color: rgba(10, 5, 20, 0.7);
             --msg-bg: rgba(30, 15, 50, 0.9);
+            --dict-text-color: #ffffff; /* 辞典の文字色（ダークモード時は見えなくなるため白に） */
         }
 
         body {
@@ -143,11 +145,15 @@
             color: var(--accent-color);
         }
 
-        /* メニュー内のたかねこ辞典リンク */
+        /* 💡 メニュー内のたかねこ辞典リンク（文字色を黒に） */
         .dict-link {
             font-family: 'KeiFont', sans-serif;
             font-size: 1.1rem;
-            color: var(--accent-color);
+            color: var(--dict-text-color) !important; 
+        }
+
+        .dict-link:hover {
+            opacity: 0.7;
         }
 
         /* ダークモード切り替えボタン */
@@ -275,7 +281,6 @@
         .sns-youtube { background-color: #FF0000; }
         .sns-x { background-color: #14171a; border: 1px solid #333; }
         .sns-tiktok { background-color: #000000; border: 1px solid #444; }
-        /* TikTokのアイコン色調整用 */
         .sns-tiktok i { color: #fff; text-shadow: 1.5px 1.5px 0 #ff0050, -1.5px -1.5px 0 #00f2fe; }
 
         /* フォーム */
@@ -410,7 +415,6 @@
             <span class="header-main-title">たかねこPodcast</span>
             <span class="header-sub-title">supported by たかねこちゃんねる技術部</span>
         </div>
-        <!-- 💡 右から「たかねこについて」「お便り」「トップ」「たかねこ辞典」の順に並ぶように記述 -->
         <nav>
             <a href="https://takanekoarchive.vercel.app/" target="_blank" class="dict-link">たかねこ辞典</a>
             <a href="#top">トップ</a>
@@ -424,64 +428,73 @@
     </header>
 
     <main>
-        <section id="top" class="hero">
-            <h1 class="hero-main-title">たかねこPodcast</h1>
-            <div class="hero-sub-title">supported by たかねこちゃんねる技術部</div>
-            <p>最新エピソードはこちらのプラットフォームから配信中！</p>
-            <div class="platform-links">
-                <a href="https://open.spotify.com/show/6Uov8GjlFlXDbA270FfgAc?si=SV0vQpAHTMmNTpihEoueug" target="_blank" title="Spotifyで聴く"><i class="fa-brands fa-spotify"></i></a>
-                <a href="https://youtube.com/playlist?list=PLN_AW2-W6mpc&si=weXLnyEQoiWzwYmC" target="_blank" title="YouTubeで聴く"><i class="fa-brands fa-youtube"></i></a>
-            </div>
-        </section>
-
-        <!-- 💡 新設：たかねこについて -->
-        <section id="about">
-            <div class="card">
-                <h2>たかねこについて</h2>
-                <div class="profile-content">
-                    <p>趣味でお酒飲みながらのんびりゲーム実況やってまうす| ε:)_🎤</p>
-                    <p>最新情報は以下の各SNSからチェック！</p>
+        <!-- ==============================================
+             トップページ ＆ お便りフォーム （初期表示）
+             ============================================== -->
+        <div id="page-top">
+            <section id="top" class="hero">
+                <h1 class="hero-main-title">たかねこPodcast</h1>
+                <div class="hero-sub-title">supported by たかねこちゃんねる技術部</div>
+                <p>最新エピソードはこちらのプラットフォームから配信中！</p>
+                <div class="platform-links">
+                    <a href="https://open.spotify.com/show/6Uov8GjlFlXDbA270FfgAc?si=SV0vQpAHTMmNTpihEoueug" target="_blank" title="Spotifyで聴く"><i class="fa-brands fa-spotify"></i></a>
+                    <a href="https://youtube.com/playlist?list=PLN_AW2-W6mpc&si=weXLnyEQoiWzwYmC" target="_blank" title="YouTubeで聴く"><i class="fa-brands fa-youtube"></i></a>
                 </div>
-                <div class="sns-links">
-                    <a href="https://youtube.com/@takaneko_ch?si=AG9Kqsd4LJyKWwua" target="_blank" class="sns-youtube">
-                        <i class="fa-brands fa-youtube"></i> YouTube
-                    </a>
-                    <a href="https://x.com/takaneko_ch?s=20" target="_blank" class="sns-x">
-                        <i class="fa-brands fa-x-twitter"></i> X (Twitter)
-                    </a>
-                    <a href="https://www.tiktok.com/@takaneko_ch?is_from_webapp=1&sender_device=pc" target="_blank" class="sns-tiktok">
-                        <i class="fa-brands fa-tiktok"></i> TikTok
-                    </a>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="contact">
-            <div class="card">
-                <h2>お便りを送る</h2>
-                
-                <div id="theme-display"></div>
-                
-                <div id="closed-message">
-                    現在、お便りの募集はお休みしています。<br>次回の募集再開をお待ちください！
-                </div>
-
-                <form id="letter-form">
-                    <div class="form-group">
-                        <label for="podcast-name">ポッドキャストネーム <span class="required">*必須</span></label>
-                        <input type="text" id="podcast-name" required placeholder="例：ラジオネーム たかねこ">
-                    </div>
+            <section id="contact">
+                <div class="card">
+                    <h2>お便りを送る</h2>
                     
-                    <div class="form-group">
-                        <label for="letter-content">お便りの内容 <span class="required">*必須</span></label>
-                        <textarea id="letter-content" required placeholder="テーマの回答や、質問・感想など自由にお書きください！"></textarea>
-                    </div>
+                    <div id="theme-display"></div>
                     
-                    <button type="submit" id="submit-btn">この内容でお便りを送る</button>
-                    <div id="form-status"></div>
-                </form>
-            </div>
-        </section>
+                    <div id="closed-message">
+                        現在、お便りの募集はお休みしています。<br>次回の募集再開をお待ちください！
+                    </div>
+
+                    <form id="letter-form">
+                        <div class="form-group">
+                            <label for="podcast-name">ポッドキャストネーム <span class="required">*必須</span></label>
+                            <input type="text" id="podcast-name" required placeholder="例：ラジオネーム たかねこ">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="letter-content">お便りの内容 <span class="required">*必須</span></label>
+                            <textarea id="letter-content" required placeholder="テーマの回答や、質問・感想など自由にお書きください！"></textarea>
+                        </div>
+                        
+                        <button type="submit" id="submit-btn">この内容でお便りを送る</button>
+                        <div id="form-status"></div>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==============================================
+             たかねこについて ページ （別タブとして切り替え表示）
+             ============================================== -->
+        <div id="page-about" style="display: none;">
+            <section id="about">
+                <div class="card">
+                    <h2>たかねこについて</h2>
+                    <div class="profile-content">
+                        <p>趣味でお酒飲みながらのんびりゲーム実況やってまうす| ε:)_🎤</p>
+                        <p>最新情報は以下の各SNSからチェック！</p>
+                    </div>
+                    <div class="sns-links">
+                        <a href="https://youtube.com/@takaneko_ch?si=AG9Kqsd4LJyKWwua" target="_blank" class="sns-youtube">
+                            <i class="fa-brands fa-youtube"></i> YouTube
+                        </a>
+                        <a href="https://x.com/takaneko_ch?s=20" target="_blank" class="sns-x">
+                            <i class="fa-brands fa-x-twitter"></i> X (Twitter)
+                        </a>
+                        <a href="https://www.tiktok.com/@takaneko_ch?is_from_webapp=1&sender_device=pc" target="_blank" class="sns-tiktok">
+                            <i class="fa-brands fa-tiktok"></i> TikTok
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
     </main>
 
     <footer>
@@ -497,7 +510,42 @@
         const targetEmailAddress = "takanekopodcast@outlook.jp"; 
         // ==============================================================
 
+        // 🚀 タブ（ページ）切り替えのルーティング処理
+        function router() {
+            const hash = window.location.hash;
+            const pageTop = document.getElementById('page-top');
+            const pageAbout = document.getElementById('page-about');
+
+            // URLの末尾が #about の時は「たかねこについて」を表示
+            if (hash === '#about') {
+                pageTop.style.display = 'none';
+                pageAbout.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // それ以外は「トップ」を表示
+                pageTop.style.display = 'block';
+                pageAbout.style.display = 'none';
+
+                if (hash === '#contact') {
+                    // お便りがクリックされた場合はその位置までスクロール
+                    const contactEl = document.getElementById('contact');
+                    if (contactEl) {
+                        contactEl.scrollIntoView({ behavior: 'smooth' });
+                    }
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        }
+
+        // ハッシュ（URLの#以降）が変わったときに実行
+        window.addEventListener('hashchange', router);
+
         document.addEventListener('DOMContentLoaded', () => {
+            // 初期表示時のルーティング実行
+            router();
+
+            // お便りフォームの制御
             const themeDisplay = document.getElementById('theme-display');
             const letterForm = document.getElementById('letter-form');
             const closedMessage = document.getElementById('closed-message');
