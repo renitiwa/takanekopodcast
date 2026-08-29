@@ -20,12 +20,13 @@
         }
 
         :root {
-            --bg-color: #f8f9fa;
-            --text-color: #2b2b2b;
-            --accent-color: #e63946;
-            --card-bg: #ffffff;
-            --sub-text-color: #666666;
-            --success-color: #2a9d8f;
+            /* 紫を基調としたカラーパレットに変更 */
+            --bg-color: #1a0b2e; /* 読み込み時の背景色（暗い紫） */
+            --text-color: #2b1b3d; /* カード内のテキスト色 */
+            --accent-color: #b538ff; /* ネオンパープル */
+            --card-bg: rgba(255, 255, 255, 0.88); /* 半透明の白（すりガラス用） */
+            --sub-text-color: #69567a;
+            --success-color: #9d4edd;
         }
 
         body {
@@ -38,6 +39,30 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            position: relative;
+        }
+
+        /* ====================================================
+           🎨 背景画像とぼかし・オーバーレイ設定
+           ==================================================== */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -20px; left: -20px; right: -20px; bottom: -20px; /* 端のぼかし漏れを防ぐ */
+            background-image: url('IMG_2110.jpeg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(12px); /* ぼかし具合 */
+            z-index: -2;
+        }
+
+        /* 視認性を上げるための暗紫色の半透明フィルター */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(30, 10, 50, 0.45);
+            z-index: -1;
         }
 
         main {
@@ -47,8 +72,10 @@
         /* ヘッダー */
         header {
             background: var(--card-bg);
+            backdrop-filter: blur(10px); /* すりガラス効果 */
+            -webkit-backdrop-filter: blur(10px);
             padding: 1.2rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -93,10 +120,12 @@
             margin: 0 auto;
         }
 
-        /* トップ */
+        /* トップ（背景画像の上に直接乗る文字なので白抜きに変更） */
         .hero {
             text-align: center;
             padding: 5rem 1.5rem;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.6); /* 文字をくっきりさせる影 */
         }
 
         .hero-main-title {
@@ -108,9 +137,10 @@
 
         .hero-sub-title {
             font-size: 1.15rem;
-            color: var(--sub-text-color);
+            color: #e5d4ff;
             margin-top: 0.8rem;
             margin-bottom: 2rem;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.6);
         }
 
         .platform-links {
@@ -124,22 +154,25 @@
             font-size: 3.8rem;
             transition: transform 0.2s ease;
             display: inline-block;
-            color: var(--text-color);
+            color: #ffffff;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
         }
 
         .platform-links a:hover {
             transform: scale(1.12);
         }
 
-        .fa-spotify { color: #1DB954; }
-        .fa-youtube { color: #FF0000; }
+        .fa-spotify:hover { color: #1DB954; }
+        .fa-youtube:hover { color: #FF0000; }
 
-        /* カード */
+        /* カード（お便りフォーム部分） */
         .card {
             background: var(--card-bg);
+            backdrop-filter: blur(15px); /* すりガラス効果 */
+            -webkit-backdrop-filter: blur(15px);
             padding: 2.5rem;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             margin-bottom: 2rem;
         }
 
@@ -177,7 +210,7 @@
             font-family: inherit;
             box-sizing: border-box;
             font-size: 1rem;
-            background-color: #fafafa;
+            background-color: rgba(255, 255, 255, 0.7);
             transition: all 0.3s;
         }
 
@@ -186,6 +219,7 @@
             outline: none;
             border-color: var(--accent-color);
             background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(181, 56, 255, 0.2);
         }
 
         textarea {
@@ -194,7 +228,7 @@
         }
 
         button {
-            background-color: var(--text-color);
+            background-color: var(--accent-color); /* ボタンも紫ベースに */
             color: white;
             border: none;
             padding: 1rem 2rem;
@@ -205,15 +239,20 @@
             transition: all 0.3s;
             width: 100%;
             font-weight: bold;
+            box-shadow: 0 4px 15px rgba(181, 56, 255, 0.3);
         }
 
         button:hover {
-            background-color: var(--accent-color);
+            background-color: #9d29e6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(181, 56, 255, 0.4);
         }
 
         button:disabled {
             background-color: #a0aec0;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         /* お知らせ・ステータス表示 */
@@ -227,14 +266,14 @@
         }
 
         .status-success {
-            background-color: #e8f5e9;
+            background-color: #f3e8ff;
             color: var(--success-color);
-            border: 1px solid #c8e6c9;
+            border: 1px solid #d8b4fe;
         }
 
         .status-error {
             background-color: #ffebee;
-            color: var(--accent-color);
+            color: #e63946;
             border: 1px solid #ffcdd2;
         }
 
@@ -242,14 +281,14 @@
             text-align: center;
             color: var(--sub-text-color);
             padding: 3rem 1.5rem;
-            background: #f1f3f5;
+            background: rgba(243, 235, 250, 0.8);
             border-radius: 8px;
             display: none;
             font-weight: bold;
         }
 
         #theme-display {
-            background: #fff5f5;
+            background: rgba(248, 240, 255, 0.9);
             padding: 1.2rem;
             border-radius: 8px;
             border-left: 4px solid var(--accent-color);
@@ -262,8 +301,9 @@
             text-align: center;
             padding: 2rem 1rem;
             font-size: 0.75rem;
-            color: var(--sub-text-color);
+            color: rgba(255, 255, 255, 0.7);
             letter-spacing: 0.05em;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
 
         /* ====================================================
@@ -273,7 +313,7 @@
             position: fixed;
             left: -5px;
             top: 130px;
-            background-color: var(--text-color);
+            background-color: var(--accent-color); /* 紫色に変更 */
             color: #ffffff;
             padding: 12px 18px 12px 20px;
             border-radius: 0 10px 10px 0;
@@ -281,7 +321,7 @@
             /* ここでご指定の keifont を適用 */
             font-family: 'KeiFont', sans-serif; 
             font-size: 1.2rem;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.15);
+            box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
             transition: transform 0.3s ease, background-color 0.3s ease;
             z-index: 1000;
             display: flex;
@@ -291,7 +331,7 @@
 
         .dict-floating-btn:hover {
             transform: translateX(5px);
-            background-color: var(--accent-color);
+            background-color: #9d29e6;
         }
 
         /* スマホ向けに位置と形を調整 */
@@ -334,6 +374,7 @@
             <div class="hero-sub-title">supported by たかねこちゃんねる技術部</div>
             <p>最新エピソードはこちらのプラットフォームから配信中！</p>
             <div class="platform-links">
+                <!-- ホバー時に元のブランドカラー(緑/赤)が出るように調整 -->
                 <a href="https://open.spotify.com/show/6Uov8GjlFlXDbA270FfgAc?si=SV0vQpAHTMmNTpihEoueug" target="_blank" title="Spotifyで聴く"><i class="fa-brands fa-spotify"></i></a>
                 <a href="https://youtube.com/playlist?list=PLN_AW2-W6mpc&si=weXLnyEQoiWzwYmC" target="_blank" title="YouTubeで聴く"><i class="fa-brands fa-youtube"></i></a>
             </div>
