@@ -20,13 +20,31 @@
         }
 
         :root {
-            /* 紫を基調としたカラーパレットに変更 */
-            --bg-color: #1a0b2e; /* 読み込み時の背景色（暗い紫） */
-            --text-color: #2b1b3d; /* カード内のテキスト色 */
-            --accent-color: #b538ff; /* ネオンパープル */
-            --card-bg: rgba(255, 255, 255, 0.88); /* 半透明の白（すりガラス用） */
+            /* 🌞 ライトモード時のカラーパレット（デフォルト） */
+            --bg-color: #1a0b2e;
+            --text-color: #2b1b3d;
+            --accent-color: #b538ff;
+            --card-bg: rgba(255, 255, 255, 0.88);
+            --header-bg: rgba(255, 255, 255, 0.88);
             --sub-text-color: #69567a;
             --success-color: #9d4edd;
+            --input-bg: rgba(255, 255, 255, 0.7);
+            --input-border: #e2e8f0;
+            --overlay-color: rgba(30, 10, 50, 0.45);
+            --msg-bg: rgba(248, 240, 255, 0.9);
+        }
+
+        /* 🌙 ダークモード時のカラーパレット */
+        [data-theme="dark"] {
+            --text-color: #e5d4ff;
+            --card-bg: rgba(20, 10, 35, 0.85);
+            --header-bg: rgba(20, 10, 35, 0.88);
+            --sub-text-color: #a996bc;
+            --success-color: #b538ff;
+            --input-bg: rgba(0, 0, 0, 0.4);
+            --input-border: #4a306d;
+            --overlay-color: rgba(10, 5, 20, 0.7);
+            --msg-bg: rgba(30, 15, 50, 0.9);
         }
 
         body {
@@ -40,6 +58,7 @@
             flex-direction: column;
             min-height: 100vh;
             position: relative;
+            transition: color 0.3s ease;
         }
 
         /* ====================================================
@@ -48,40 +67,45 @@
         body::before {
             content: "";
             position: fixed;
-            top: -20px; left: -20px; right: -20px; bottom: -20px; /* 端のぼかし漏れを防ぐ */
+            top: -20px; left: -20px; right: -20px; bottom: -20px;
             background-image: url('IMG_2110.jpeg');
             background-size: cover;
             background-position: center;
-            filter: blur(12px); /* ぼかし具合 */
+            filter: blur(12px);
             z-index: -2;
         }
 
-        /* 視認性を上げるための暗紫色の半透明フィルター */
         body::after {
             content: "";
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(30, 10, 50, 0.45);
+            background-color: var(--overlay-color);
             z-index: -1;
+            transition: background-color 0.3s ease;
         }
 
         main {
             flex: 1;
         }
 
-        /* ヘッダー */
+        /* ====================================================
+           📌 ヘッダー・メニュー
+           ==================================================== */
         header {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px); /* すりガラス効果 */
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             padding: 1.2rem 2rem;
             box-shadow: 0 2px 15px rgba(0,0,0,0.1);
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 100;
+            transition: background 0.3s ease;
+            gap: 1rem;
         }
 
         .header-title-container {
@@ -101,8 +125,14 @@
             margin-top: 2px;
         }
 
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+        }
+
         nav a {
-            margin-left: 1.5rem;
             text-decoration: none;
             color: var(--text-color);
             font-weight: bold;
@@ -113,6 +143,30 @@
             color: var(--accent-color);
         }
 
+        /* メニュー内のたかねこ辞典リンク */
+        .dict-link {
+            font-family: 'KeiFont', sans-serif;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+
+        /* ダークモード切り替えボタン */
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle-btn:hover {
+            color: var(--accent-color);
+        }
+
         /* セクション共通 */
         section {
             padding: 3.5rem 1.5rem;
@@ -120,12 +174,12 @@
             margin: 0 auto;
         }
 
-        /* トップ（背景画像の上に直接乗る文字なので白抜きに変更） */
+        /* トップ */
         .hero {
             text-align: center;
             padding: 5rem 1.5rem;
             color: #ffffff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.6); /* 文字をくっきりさせる影 */
+            text-shadow: 0 2px 10px rgba(0,0,0,0.6);
         }
 
         .hero-main-title {
@@ -161,19 +215,19 @@
         .platform-links a:hover {
             transform: scale(1.12);
         }
-
         .fa-spotify:hover { color: #1DB954; }
         .fa-youtube:hover { color: #FF0000; }
 
-        /* カード（お便りフォーム部分） */
+        /* カード共通 */
         .card {
             background: var(--card-bg);
-            backdrop-filter: blur(15px); /* すりガラス効果 */
+            backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             padding: 2.5rem;
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             margin-bottom: 2rem;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .card h2 {
@@ -183,6 +237,46 @@
             padding-bottom: 0.4rem;
             display: inline-block;
         }
+
+        /* ====================================================
+           👤 たかねこについて（プロフィール＆SNS）
+           ==================================================== */
+        .profile-content {
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .sns-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .sns-links a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            font-size: 1.05rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .sns-links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .sns-youtube { background-color: #FF0000; }
+        .sns-x { background-color: #14171a; border: 1px solid #333; }
+        .sns-tiktok { background-color: #000000; border: 1px solid #444; }
+        /* TikTokのアイコン色調整用 */
+        .sns-tiktok i { color: #fff; text-shadow: 1.5px 1.5px 0 #ff0050, -1.5px -1.5px 0 #00f2fe; }
 
         /* フォーム */
         .form-group {
@@ -205,12 +299,13 @@
         textarea {
             width: 100%;
             padding: 1rem;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--input-border);
             border-radius: 8px;
             font-family: inherit;
             box-sizing: border-box;
             font-size: 1rem;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: var(--input-bg);
+            color: var(--text-color);
             transition: all 0.3s;
         }
 
@@ -218,7 +313,7 @@
         textarea:focus {
             outline: none;
             border-color: var(--accent-color);
-            background-color: #ffffff;
+            background-color: var(--msg-bg);
             box-shadow: 0 0 0 3px rgba(181, 56, 255, 0.2);
         }
 
@@ -227,8 +322,8 @@
             min-height: 180px;
         }
 
-        button {
-            background-color: var(--accent-color); /* ボタンも紫ベースに */
+        button[type="submit"] {
+            background-color: var(--accent-color);
             color: white;
             border: none;
             padding: 1rem 2rem;
@@ -242,13 +337,13 @@
             box-shadow: 0 4px 15px rgba(181, 56, 255, 0.3);
         }
 
-        button:hover {
+        button[type="submit"]:hover {
             background-color: #9d29e6;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(181, 56, 255, 0.4);
         }
 
-        button:disabled {
+        button[type="submit"]:disabled {
             background-color: #a0aec0;
             cursor: not-allowed;
             transform: none;
@@ -264,15 +359,13 @@
             text-align: center;
             font-weight: bold;
         }
-
         .status-success {
-            background-color: #f3e8ff;
+            background-color: var(--msg-bg);
             color: var(--success-color);
-            border: 1px solid #d8b4fe;
+            border: 1px solid var(--accent-color);
         }
-
         .status-error {
-            background-color: #ffebee;
+            background-color: rgba(255, 235, 238, 0.9);
             color: #e63946;
             border: 1px solid #ffcdd2;
         }
@@ -281,19 +374,21 @@
             text-align: center;
             color: var(--sub-text-color);
             padding: 3rem 1.5rem;
-            background: rgba(243, 235, 250, 0.8);
+            background: var(--msg-bg);
             border-radius: 8px;
             display: none;
             font-weight: bold;
+            transition: background 0.3s ease;
         }
 
         #theme-display {
-            background: rgba(248, 240, 255, 0.9);
+            background: var(--msg-bg);
             padding: 1.2rem;
             border-radius: 8px;
             border-left: 4px solid var(--accent-color);
             margin-bottom: 1.8rem;
             font-weight: bold;
+            transition: background 0.3s ease;
         }
 
         /* フッター */
@@ -306,65 +401,25 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
 
-        /* ====================================================
-           📖 たかねこ辞典ボタン（画面左側に固定）
-           ==================================================== */
-        .dict-floating-btn {
-            position: fixed;
-            left: -5px;
-            top: 130px;
-            background-color: var(--accent-color); /* 紫色に変更 */
-            color: #ffffff;
-            padding: 12px 18px 12px 20px;
-            border-radius: 0 10px 10px 0;
-            text-decoration: none;
-            /* ここでご指定の keifont を適用 */
-            font-family: 'KeiFont', sans-serif; 
-            font-size: 1.2rem;
-            box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease, background-color 0.3s ease;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .dict-floating-btn:hover {
-            transform: translateX(5px);
-            background-color: #9d29e6;
-        }
-
-        /* スマホ向けに位置と形を調整 */
-        @media (max-width: 600px) {
-            .dict-floating-btn {
-                top: auto;
-                bottom: 20px;
-                left: 15px;
-                border-radius: 50px;
-                padding: 10px 20px;
-                font-size: 1rem;
-            }
-            .dict-floating-btn:hover {
-                transform: translateY(-3px);
-            }
-        }
     </style>
 </head>
 <body>
-
-    <!-- 📖 たかねこ辞典 リンクボタン -->
-    <a href="https://takanekoarchive.vercel.app/" target="_blank" class="dict-floating-btn">
-        <i class="fa-solid fa-book"></i> たかねこ辞典
-    </a>
 
     <header>
         <div class="header-title-container">
             <span class="header-main-title">たかねこPodcast</span>
             <span class="header-sub-title">supported by たかねこちゃんねる技術部</span>
         </div>
+        <!-- 💡 右から「たかねこについて」「お便り」「トップ」「たかねこ辞典」の順に並ぶように記述 -->
         <nav>
+            <a href="https://takanekoarchive.vercel.app/" target="_blank" class="dict-link">たかねこ辞典</a>
             <a href="#top">トップ</a>
             <a href="#contact">お便り</a>
+            <a href="#about">たかねこについて</a>
+            <!-- ダークモード切り替えボタン -->
+            <button id="theme-toggle" class="theme-toggle-btn" title="テーマを切り替える">
+                <i class="fa-solid fa-moon"></i>
+            </button>
         </nav>
     </header>
 
@@ -374,9 +429,30 @@
             <div class="hero-sub-title">supported by たかねこちゃんねる技術部</div>
             <p>最新エピソードはこちらのプラットフォームから配信中！</p>
             <div class="platform-links">
-                <!-- ホバー時に元のブランドカラー(緑/赤)が出るように調整 -->
                 <a href="https://open.spotify.com/show/6Uov8GjlFlXDbA270FfgAc?si=SV0vQpAHTMmNTpihEoueug" target="_blank" title="Spotifyで聴く"><i class="fa-brands fa-spotify"></i></a>
                 <a href="https://youtube.com/playlist?list=PLN_AW2-W6mpc&si=weXLnyEQoiWzwYmC" target="_blank" title="YouTubeで聴く"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </section>
+
+        <!-- 💡 新設：たかねこについて -->
+        <section id="about">
+            <div class="card">
+                <h2>たかねこについて</h2>
+                <div class="profile-content">
+                    <p>趣味でお酒飲みながらのんびりゲーム実況やってまうす| ε:)_🎤</p>
+                    <p>最新情報は以下の各SNSからチェック！</p>
+                </div>
+                <div class="sns-links">
+                    <a href="https://youtube.com/@takaneko_ch?si=AG9Kqsd4LJyKWwua" target="_blank" class="sns-youtube">
+                        <i class="fa-brands fa-youtube"></i> YouTube
+                    </a>
+                    <a href="https://x.com/takaneko_ch?s=20" target="_blank" class="sns-x">
+                        <i class="fa-brands fa-x-twitter"></i> X (Twitter)
+                    </a>
+                    <a href="https://www.tiktok.com/@takaneko_ch?is_from_webapp=1&sender_device=pc" target="_blank" class="sns-tiktok">
+                        <i class="fa-brands fa-tiktok"></i> TikTok
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -414,14 +490,13 @@
 
     <script>
         // ==============================================================
-        // ⚙️ 設定エリア（ここを変更して管理します）
+        // ⚙️ 設定エリア
         // ==============================================================
         const isAcceptingLetters = false; 
         const currentTheme = "今回のテーマ：初恋のエピソード、気になる人や好きな人についてや恋愛相談など恋愛全般を大募集！！！";
         const targetEmailAddress = "takanekopodcast@outlook.jp"; 
         // ==============================================================
 
-        // 初期表示設定
         document.addEventListener('DOMContentLoaded', () => {
             const themeDisplay = document.getElementById('theme-display');
             const letterForm = document.getElementById('letter-form');
@@ -438,9 +513,34 @@
                 closedMessage.style.display = 'block';
                 themeDisplay.style.display = 'none';
             }
+
+            // 🌙 ダークモードの初期設定
+            const savedTheme = localStorage.getItem('theme');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeToggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
         });
 
-        // フォーム送信処理（裏側で直接メール送信）
+        // 🌙 ダークモード切り替え処理
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const body = document.body;
+            const btn = document.getElementById('theme-toggle');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+        });
+
+        // ✉️ フォーム送信処理
         document.getElementById('letter-form').addEventListener('submit', async function(event) {
             event.preventDefault();
 
@@ -449,26 +549,22 @@
             const name = document.getElementById('podcast-name').value;
             const content = document.getElementById('letter-content').value;
 
-            // 送信中のUI制御
             btn.disabled = true;
             btn.textContent = 'お便りを送信中...';
             status.style.display = 'none';
             status.className = '';
 
-            // 送信データの作成
             const formData = new FormData();
             formData.append('ポッドキャストネーム', name);
             formData.append('お便り本文', content);
             formData.append('_subject', `【お便り】${name} 様より（たかねこPodcast）`);
-            formData.append('_captcha', 'false'); // ロボット認証画面を挟まず即送信
+            formData.append('_captcha', 'false');
 
             try {
                 const response = await fetch(`https://formsubmit.co/ajax/${targetEmailAddress}`, {
                     method: 'POST',
                     body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                    headers: { 'Accept': 'application/json' }
                 });
 
                 if (response.ok) {
