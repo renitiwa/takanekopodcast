@@ -145,7 +145,7 @@
             color: var(--accent-color);
         }
 
-        /* 💡 メニュー内のたかねこ辞典リンク（文字色を黒に） */
+        /* メニュー内のたかねこ辞典リンク */
         .dict-link {
             font-family: 'KeiFont', sans-serif;
             font-size: 1.1rem;
@@ -201,6 +201,24 @@
             margin-top: 0.8rem;
             margin-bottom: 2rem;
             text-shadow: 0 1px 5px rgba(0,0,0,0.6);
+            
+            /* ✒️ ここから追加：手書き風（スラスラ表示）アニメーションの設定 */
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            clip-path: inset(0 100% 0 0); /* 最初は右側を完全に隠す */
+            animation: handwritingReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 0.3s; /* ページを開いて0.3秒後にスタート */
+        }
+
+        /* 手書き風アニメーションのキーフレーム */
+        @keyframes handwritingReveal {
+            0% {
+                clip-path: inset(0 100% 0 0);
+            }
+            100% {
+                clip-path: inset(0 -5% 0 0); /* 最後まで綺麗に表示 */
+            }
         }
 
         .platform-links {
@@ -516,18 +534,15 @@
             const pageTop = document.getElementById('page-top');
             const pageAbout = document.getElementById('page-about');
 
-            // URLの末尾が #about の時は「たかねこについて」を表示
             if (hash === '#about') {
                 pageTop.style.display = 'none';
                 pageAbout.style.display = 'block';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
-                // それ以外は「トップ」を表示
                 pageTop.style.display = 'block';
                 pageAbout.style.display = 'none';
 
                 if (hash === '#contact') {
-                    // お便りがクリックされた場合はその位置までスクロール
                     const contactEl = document.getElementById('contact');
                     if (contactEl) {
                         contactEl.scrollIntoView({ behavior: 'smooth' });
@@ -538,14 +553,11 @@
             }
         }
 
-        // ハッシュ（URLの#以降）が変わったときに実行
         window.addEventListener('hashchange', router);
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 初期表示時のルーティング実行
             router();
 
-            // お便りフォームの制御
             const themeDisplay = document.getElementById('theme-display');
             const letterForm = document.getElementById('letter-form');
             const closedMessage = document.getElementById('closed-message');
