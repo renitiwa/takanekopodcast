@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>たかねこPodcast supported by たかねこちゃんねる技術部</title>
     
-    <!-- アイコンと手書き風フォント(Yomogi)の読み込み -->
+    <!-- アイコンの読み込み -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Yomogi&display=swap" rel="stylesheet">
     
     <style>
         /* ベースフォント設定 */
@@ -89,10 +88,6 @@
             transition: background-color 0.3s ease;
         }
 
-        main {
-            flex: 1;
-        }
-
         /* ====================================================
            📌 ヘッダー・メニュー
            ==================================================== */
@@ -106,11 +101,19 @@
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
+            /* 💡 ヘッダーを上部に完全固定 */
+            position: fixed;
             top: 0;
-            z-index: 100;
+            left: 0;
+            right: 0;
+            z-index: 1000;
             transition: background 0.3s ease;
-            gap: 1rem;
+        }
+
+        /* ヘッダーが固定されているため、メインコンテンツがヘッダーの下に隠れないように余白を設ける */
+        main {
+            margin-top: 85px; /* ヘッダーの高さに合わせて調整 */
+            flex: 1;
         }
 
         .header-title-container {
@@ -142,6 +145,7 @@
             color: var(--text-color);
             font-weight: bold;
             transition: color 0.3s;
+            cursor: pointer;
         }
 
         nav a:hover {
@@ -196,31 +200,12 @@
             line-height: 1.2;
         }
 
-        /* ✒️ アニメーションと手書きフォントの設定 */
         .hero-sub-title {
-            font-family: 'Yomogi', cursive; /* GoogleFontsの手書き風フォント */
-            font-size: 1.5rem;
+            font-size: 1.15rem;
             color: #e5d4ff;
             margin-top: 0.8rem;
             margin-bottom: 2rem;
             text-shadow: 0 1px 5px rgba(0,0,0,0.6);
-            
-            /* サラサラと書き出されるアニメーション */
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
-            clip-path: inset(0 100% 0 0); /* 最初は右側を完全に隠す */
-            animation: handwritingReveal 2.2s ease-out forwards;
-            animation-delay: 0.4s; /* ページを開いてから0.4秒後に書き始める */
-        }
-
-        @keyframes handwritingReveal {
-            0% {
-                clip-path: inset(0 100% 0 0);
-            }
-            100% {
-                clip-path: inset(0 -5% 0 0); /* 最後まで表示 */
-            }
         }
 
         .platform-links {
@@ -245,7 +230,7 @@
         /* プラットフォームのホバーカラー */
         .fa-spotify:hover { color: #1DB954; }
         .fa-youtube:hover { color: #FF0000; }
-        .fa-podcast:hover { color: #a238ff; } /* Apple Podcast風の紫 */
+        .fa-podcast:hover { color: #a238ff; }
 
         /* カード共通 */
         .card {
@@ -265,13 +250,17 @@
             border-bottom: 2px solid var(--accent-color);
             padding-bottom: 0.4rem;
             display: inline-block;
+            margin-bottom: 1.5rem;
         }
 
-        /* 👤 たかねこについて */
-        .profile-content {
-            margin-bottom: 2rem;
+        /* 👤 たかねこについて & 🎙️ このポッドキャストについて */
+        .profile-content, .about-podcast-content {
             font-size: 1.05rem;
             line-height: 1.8;
+        }
+        
+        .profile-content {
+            margin-bottom: 2rem;
         }
 
         .sns-links {
@@ -427,6 +416,15 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
 
+        /* ページ（タブ）を隠すためのクラス */
+        .page-content {
+            display: none;
+        }
+        
+        .page-content.active {
+            display: block;
+        }
+
     </style>
 </head>
 <body>
@@ -439,6 +437,7 @@
         <nav>
             <a href="https://takanekoarchive.vercel.app/" target="_blank" class="dict-link">たかねこ辞典</a>
             <a href="#top">トップ</a>
+            <!-- 💡 お便りを別タブのリンクに変更 -->
             <a href="#contact">お便り</a>
             <a href="#about">たかねこについて</a>
             <button id="theme-toggle" class="theme-toggle-btn" title="テーマを切り替える">
@@ -449,24 +448,39 @@
 
     <main>
         <!-- ==============================================
-             トップページ ＆ お便りフォーム （初期表示）
+             トップページ （初期表示）
              ============================================== -->
-        <div id="page-top">
+        <div id="page-top" class="page-content active">
             <section id="top" class="hero">
                 <h1 class="hero-main-title">たかねこPodcast</h1>
                 
-                <!-- ✒️ ここが手書き風に表示されます -->
                 <div class="hero-sub-title">supported by たかねこちゃんねる技術部</div>
                 
                 <p>最新エピソードはこちらのプラットフォームから配信中！</p>
                 <div class="platform-links">
                     <a href="https://open.spotify.com/show/6Uov8GjlFlXDbA270FfgAc?si=SV0vQpAHTMmNTpihEoueug" target="_blank" title="Spotifyで聴く"><i class="fa-brands fa-spotify"></i></a>
                     <a href="https://youtube.com/playlist?list=PLN_AW2-W6mpc&si=weXLnyEQoiWzwYmC" target="_blank" title="YouTubeで聴く"><i class="fa-brands fa-youtube"></i></a>
-                    <!-- 💡 Apple Podcastのリンク（href="#" の部分）は後で実際の配信URLに差し替えてください -->
-                    <a href="https://podcasts.apple.com/jp/podcast/%E3%81%9F%E3%81%8B%E3%81%AD%E3%81%93podcast-supported-by-%E3%81%9F%E3%81%8B%E3%81%AD%E3%81%93%E3%81%A1%E3%82%83%E3%82%93%E3%81%AD%E3%82%8B%E6%8A%80%E8%A1%93%E9%83%A8/id6806699019" target="_blank" title="Apple Podcastで聴く"><i class="fa-solid fa-podcast"></i></a>
+                    <a href="#" target="_blank" title="Apple Podcastで聴く"><i class="fa-solid fa-podcast"></i></a>
                 </div>
             </section>
 
+            <!-- 💡 お便りの代わりに「このポッドキャストについて」を配置 -->
+            <section id="podcast-info">
+                <div class="card">
+                    <h2>このポッドキャストについて</h2>
+                    <div class="about-podcast-content">
+                        <p>たかねこPodcastは、パーソナリティのたかねこがリスナーの皆様からのお便りにお答えしたり、日常の気になることについてゆるく語る番組です。</p>
+                        <p>ゲーム実況の裏話や、ここでしか聞けないトークもお届けします！</p>
+                        <p>毎週〇曜日更新予定。（※配信スケジュールは変更になる場合があります）</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==============================================
+             お便り ページ （別タブ）
+             ============================================== -->
+        <div id="page-contact" class="page-content">
             <section id="contact">
                 <div class="card">
                     <h2>お便りを送る</h2>
@@ -496,9 +510,9 @@
         </div>
 
         <!-- ==============================================
-             たかねこについて ページ （別タブとして切り替え表示）
+             たかねこについて ページ （別タブ）
              ============================================== -->
-        <div id="page-about" style="display: none;">
+        <div id="page-about" class="page-content">
             <section id="about">
                 <div class="card">
                     <h2>たかねこについて</h2>
@@ -538,26 +552,22 @@
         // 🚀 タブ（ページ）切り替えのルーティング処理
         function router() {
             const hash = window.location.hash;
-            const pageTop = document.getElementById('page-top');
-            const pageAbout = document.getElementById('page-about');
+            const pages = document.querySelectorAll('.page-content');
+            
+            // 全てのページを一旦非表示にする
+            pages.forEach(page => page.classList.remove('active'));
 
             if (hash === '#about') {
-                pageTop.style.display = 'none';
-                pageAbout.style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                document.getElementById('page-about').classList.add('active');
+            } else if (hash === '#contact') {
+                document.getElementById('page-contact').classList.add('active');
             } else {
-                pageTop.style.display = 'block';
-                pageAbout.style.display = 'none';
-
-                if (hash === '#contact') {
-                    const contactEl = document.getElementById('contact');
-                    if (contactEl) {
-                        contactEl.scrollIntoView({ behavior: 'smooth' });
-                    }
-                } else {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
+                // デフォルトはトップページ (#top または ハッシュなし)
+                document.getElementById('page-top').classList.add('active');
             }
+            
+            // ページ上部にスクロール
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         window.addEventListener('hashchange', router);
