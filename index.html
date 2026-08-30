@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>たかねこPodcast supported by たかねこちゃんねる技術部</title>
+    
+    <!-- アイコンと手書き風フォント(Yomogi)の読み込み -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Yomogi&display=swap" rel="stylesheet">
     
     <style>
         /* ベースフォント設定 */
@@ -32,7 +35,7 @@
             --input-border: #e2e8f0;
             --overlay-color: rgba(30, 10, 50, 0.45);
             --msg-bg: rgba(248, 240, 255, 0.9);
-            --dict-text-color: #000000; /* 辞典の文字色（ライトモードは黒） */
+            --dict-text-color: #000000;
         }
 
         /* 🌙 ダークモード時のカラーパレット */
@@ -46,7 +49,7 @@
             --input-border: #4a306d;
             --overlay-color: rgba(10, 5, 20, 0.7);
             --msg-bg: rgba(30, 15, 50, 0.9);
-            --dict-text-color: #ffffff; /* 辞典の文字色（ダークモード時は見えなくなるため白に） */
+            --dict-text-color: #ffffff;
         }
 
         body {
@@ -145,7 +148,6 @@
             color: var(--accent-color);
         }
 
-        /* メニュー内のたかねこ辞典リンク */
         .dict-link {
             font-family: 'KeiFont', sans-serif;
             font-size: 1.1rem;
@@ -156,7 +158,6 @@
             opacity: 0.7;
         }
 
-        /* ダークモード切り替えボタン */
         .theme-toggle-btn {
             background: none;
             border: none;
@@ -195,29 +196,30 @@
             line-height: 1.2;
         }
 
+        /* ✒️ アニメーションと手書きフォントの設定 */
         .hero-sub-title {
-            font-size: 1.15rem;
+            font-family: 'Yomogi', cursive; /* GoogleFontsの手書き風フォント */
+            font-size: 1.5rem;
             color: #e5d4ff;
             margin-top: 0.8rem;
             margin-bottom: 2rem;
             text-shadow: 0 1px 5px rgba(0,0,0,0.6);
             
-            /* ✒️ ここから追加：手書き風（スラスラ表示）アニメーションの設定 */
+            /* サラサラと書き出されるアニメーション */
             width: fit-content;
             margin-left: auto;
             margin-right: auto;
             clip-path: inset(0 100% 0 0); /* 最初は右側を完全に隠す */
-            animation: handwritingReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            animation-delay: 0.3s; /* ページを開いて0.3秒後にスタート */
+            animation: handwritingReveal 2.2s ease-out forwards;
+            animation-delay: 0.4s; /* ページを開いてから0.4秒後に書き始める */
         }
 
-        /* 手書き風アニメーションのキーフレーム */
         @keyframes handwritingReveal {
             0% {
                 clip-path: inset(0 100% 0 0);
             }
             100% {
-                clip-path: inset(0 -5% 0 0); /* 最後まで綺麗に表示 */
+                clip-path: inset(0 -5% 0 0); /* 最後まで表示 */
             }
         }
 
@@ -239,8 +241,11 @@
         .platform-links a:hover {
             transform: scale(1.12);
         }
+        
+        /* プラットフォームのホバーカラー */
         .fa-spotify:hover { color: #1DB954; }
         .fa-youtube:hover { color: #FF0000; }
+        .fa-podcast:hover { color: #a238ff; } /* Apple Podcast風の紫 */
 
         /* カード共通 */
         .card {
@@ -262,9 +267,7 @@
             display: inline-block;
         }
 
-        /* ====================================================
-           👤 たかねこについて（プロフィール＆SNS）
-           ==================================================== */
+        /* 👤 たかねこについて */
         .profile-content {
             margin-bottom: 2rem;
             font-size: 1.05rem;
@@ -438,7 +441,6 @@
             <a href="#top">トップ</a>
             <a href="#contact">お便り</a>
             <a href="#about">たかねこについて</a>
-            <!-- ダークモード切り替えボタン -->
             <button id="theme-toggle" class="theme-toggle-btn" title="テーマを切り替える">
                 <i class="fa-solid fa-moon"></i>
             </button>
@@ -452,11 +454,16 @@
         <div id="page-top">
             <section id="top" class="hero">
                 <h1 class="hero-main-title">たかねこPodcast</h1>
+                
+                <!-- ✒️ ここが手書き風に表示されます -->
                 <div class="hero-sub-title">supported by たかねこちゃんねる技術部</div>
+                
                 <p>最新エピソードはこちらのプラットフォームから配信中！</p>
                 <div class="platform-links">
                     <a href="https://open.spotify.com/show/6Uov8GjlFlXDbA270FfgAc?si=SV0vQpAHTMmNTpihEoueug" target="_blank" title="Spotifyで聴く"><i class="fa-brands fa-spotify"></i></a>
                     <a href="https://youtube.com/playlist?list=PLN_AW2-W6mpc&si=weXLnyEQoiWzwYmC" target="_blank" title="YouTubeで聴く"><i class="fa-brands fa-youtube"></i></a>
+                    <!-- 💡 Apple Podcastのリンク（href="#" の部分）は後で実際の配信URLに差し替えてください -->
+                    <a href="https://podcasts.apple.com/jp/podcast/%E3%81%9F%E3%81%8B%E3%81%AD%E3%81%93podcast-supported-by-%E3%81%9F%E3%81%8B%E3%81%AD%E3%81%93%E3%81%A1%E3%82%83%E3%82%93%E3%81%AD%E3%82%8B%E6%8A%80%E8%A1%93%E9%83%A8/id6806699019" target="_blank" title="Apple Podcastで聴く"><i class="fa-solid fa-podcast"></i></a>
                 </div>
             </section>
 
