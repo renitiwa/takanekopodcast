@@ -365,7 +365,6 @@
             box-shadow: none;
         }
 
-        /* お知らせ・ステータス表示 */
         #form-status {
             display: none;
             padding: 1.2rem;
@@ -406,7 +405,6 @@
             transition: background 0.3s ease;
         }
 
-        /* フッター */
         footer {
             text-align: center;
             padding: 2rem 1rem;
@@ -425,6 +423,120 @@
             display: block;
         }
 
+        /* ====================================================
+           🎙️ Podcast モーダル（ポップアップ）関連
+           ==================================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 550px;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            position: relative;
+            text-align: center;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: none; border: none;
+            font-size: 1.5rem; color: var(--sub-text-color);
+            cursor: pointer; padding: 0; width: auto; box-shadow: none;
+        }
+        .modal-close:hover {
+            color: var(--accent-color);
+        }
+
+        .modal-choices {
+            display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;
+        }
+
+        .modal-btn {
+            background: var(--input-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .modal-back-btn {
+            background: transparent;
+            border: 1px solid var(--sub-text-color);
+            color: var(--sub-text-color);
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .modal-back-btn:hover {
+            background: var(--sub-text-color);
+            color: white;
+        }
+
+        /* ブラウザ再生用のエピソードリスト */
+        .episode-item {
+            text-align: left;
+            background: var(--input-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--input-border);
+        }
+
+        .episode-title {
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            line-height: 1.4;
+        }
+
+        .episode-audio {
+            width: 100%;
+            height: 40px;
+        }
+
     </style>
 </head>
 <body>
@@ -435,9 +547,9 @@
             <span class="header-sub-title">supported by たかねこちゃんねる技術部</span>
         </div>
         <nav>
+            <a href="javascript:void(0)" onclick="openListenModal()">Podcastを聞く</a>
             <a href="https://takanekoarchive.vercel.app/" target="_blank" class="dict-link">たかねこ辞典</a>
             <a href="#top">トップ</a>
-            <!-- 💡 お便りを別タブのリンクに変更 -->
             <a href="#contact">お便り</a>
             <a href="#about">たかねこについて</a>
             <button id="theme-toggle" class="theme-toggle-btn" title="テーマを切り替える">
@@ -464,7 +576,6 @@
                 </div>
             </section>
 
-            <!-- 💡 お便りの代わりに「このポッドキャストについて」を配置 -->
             <section id="podcast-info">
                 <div class="card">
                     <h2>このポッドキャストについて</h2>
@@ -536,17 +647,61 @@
         </div>
     </main>
 
+    <!-- ==============================================
+         🎙️ Podcastを聞く モーダル（ポップアップ）
+         ============================================== -->
+    <div class="modal-overlay" id="listen-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeListenModal()"><i class="fa-solid fa-xmark"></i></button>
+            
+            <!-- Step 1: 選択画面 -->
+            <div id="listen-step1">
+                <h2 style="margin-top:0; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 0.4rem;">どこで聴きますか？</h2>
+                <div class="modal-choices">
+                    <button class="modal-btn" onclick="showListenStep('streaming')"><i class="fa-solid fa-headphones"></i> ストリーミングサービスから聴く</button>
+                    <button class="modal-btn" onclick="showListenStep('browser')"><i class="fa-solid fa-globe"></i> ブラウザで直接聴く</button>
+                </div>
+            </div>
+
+            <!-- Step 2: ストリーミングサービス -->
+            <div id="listen-streaming" style="display:none;">
+                <h2 style="margin-top:0; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 0.4rem;">ストリーミングサービス</h2>
+                <div class="platform-links" style="margin-top: 2rem; margin-bottom: 1.5rem;">
+                    <a href="https://open.spotify.com/show/6Uov8GjlFlXDbA270FfgAc?si=SV0vQpAHTMmNTpihEoueug" target="_blank" title="Spotifyで聴く"><i class="fa-brands fa-spotify"></i></a>
+                    <a href="https://youtube.com/playlist?list=PLN_AW2-W6mpc&si=weXLnyEQoiWzwYmC" target="_blank" title="YouTubeで聴く"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://podcasts.apple.com/us/podcast/たかねこpodcast-supported-by-たかねこちゃんねる技術部/id6806699019" target="_blank" title="Apple Podcastで聴く"><i class="fa-solid fa-podcast"></i></a>
+                </div>
+                <button class="modal-back-btn" onclick="showListenStep('step1')">戻る</button>
+            </div>
+
+            <!-- Step 3: ブラウザで聴く (RSS自動取得とプレーヤー) -->
+            <div id="listen-browser" style="display:none;">
+                <h2 style="margin-top:0; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 0.4rem;">ブラウザで聴く</h2>
+                <p style="font-size: 0.95rem; margin-bottom: 1rem;">最新のエピソードを直接再生できます！</p>
+                
+                <!-- 取得したエピソード一覧が表示される場所 -->
+                <div id="podcast-player-container" style="max-height: 300px; overflow-y: auto; padding-right: 5px;"></div>
+                
+                <button class="modal-back-btn" onclick="showListenStep('step1')" style="margin-top: 20px;">戻る</button>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>© たかねこちゃんねる技術部</p>
     </footer>
 
     <script>
         // ==============================================================
-        // ⚙️ 設定エリア
+        // ⚙️ 設定エリア（ここを変更して管理します）
         // ==============================================================
         const isAcceptingLetters = true; 
         const currentTheme = "れーにち、たかねこに聞きたいこと、相談したいことなど大募集！！なんでもお気軽に送ってください！！";
         const targetEmailAddress = "takanekopodcast@outlook.jp"; 
+
+        // 💡 PodcastのRSS URLをここに設定してください
+        // ※ 例: Spotify for Podcasters等で発行されるRSSフィードURL
+        const podcastRssUrl = "https://anchor.fm/s/1167d87c0/podcast/rss"; 
         // ==============================================================
 
         // 🚀 タブ（ページ）切り替えのルーティング処理
@@ -617,7 +772,80 @@
             }
         });
 
+        // ==============================================================
+        // 🎙️ Podcast モーダル機能 ＆ RSS取得処理
+        // ==============================================================
+        let isRssFetched = false; // 連続でAPIを叩かないためのフラグ
+
+        function openListenModal() {
+            document.getElementById('listen-modal').classList.add('active');
+            showListenStep('step1'); // 最初は必ず選択画面から
+        }
+
+        function closeListenModal() {
+            document.getElementById('listen-modal').classList.remove('active');
+        }
+
+        function showListenStep(step) {
+            document.getElementById('listen-step1').style.display = (step === 'step1') ? 'block' : 'none';
+            document.getElementById('listen-streaming').style.display = (step === 'streaming') ? 'block' : 'none';
+            document.getElementById('listen-browser').style.display = (step === 'browser') ? 'block' : 'none';
+
+            // ブラウザ再生が選ばれたら自動でRSSを取得する
+            if (step === 'browser' && !isRssFetched) {
+                fetchPodcastRSS();
+            }
+        }
+
+        // 外部のRSSをパースするためのAPI(rss2json)を利用してブラウザ再生を実現
+        async function fetchPodcastRSS() {
+            const container = document.getElementById('podcast-player-container');
+            
+            if(!podcastRssUrl) {
+                container.innerHTML = '<p style="color: #e63946; margin-top:1rem;">⚠️ RSS URLが設定されていません。<br>コード下部の設定エリア（podcastRssUrl）にURLを入力してください。</p>';
+                return;
+            }
+            
+            container.innerHTML = '<p style="margin-top:1rem;">エピソードを読み込み中...</p>';
+            
+            try {
+                // rss2json APIを用いてRSSフィードを取得
+                const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(podcastRssUrl)}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                
+                if(data.status !== 'ok') {
+                    throw new Error('RSSの取得に失敗しました。URLが正しいか確認してください。');
+                }
+                
+                let html = '<div style="margin-top: 1rem;">';
+                const episodes = data.items.slice(0, 5); // 最新の5件を表示
+                
+                if (episodes.length === 0) {
+                    html += '<p>エピソードが見つかりませんでした。</p>';
+                } else {
+                    episodes.forEach(ep => {
+                        let audioUrl = ep.enclosure ? ep.enclosure.link : '';
+                        html += `
+                            <div class="episode-item">
+                                <div class="episode-title">${ep.title}</div>
+                                ${audioUrl ? `<audio class="episode-audio" controls src="${audioUrl}"></audio>` : '<p style="font-size:0.85rem; color:#e63946;">音声データがありません</p>'}
+                            </div>
+                        `;
+                    });
+                }
+                html += '</div>';
+                container.innerHTML = html;
+                isRssFetched = true; // 取得完了フラグを立てる
+                
+            } catch (error) {
+                container.innerHTML = `<p style="color: #e63946; margin-top:1rem;">エラーが発生しました: ${error.message}</p>`;
+            }
+        }
+
+        // ==============================================================
         // ✉️ フォーム送信処理
+        // ==============================================================
         document.getElementById('letter-form').addEventListener('submit', async function(event) {
             event.preventDefault();
 
