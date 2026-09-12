@@ -22,7 +22,7 @@
         }
 
         :root {
-            /* 🌞 ライトモード時のカラーパレット（デフォルト） */
+            /* 🌞 ライトモード時のカラーパレット */
             --bg-color: #1a0b2e;
             --text-color: #2b1b3d;
             --accent-color: #b538ff;
@@ -65,9 +65,7 @@
             transition: color 0.3s ease;
         }
 
-        /* ====================================================
-           🎨 背景画像とぼかし・オーバーレイ設定
-           ==================================================== */
+        /* 背景画像とぼかし */
         body::before {
             content: "";
             position: fixed;
@@ -88,9 +86,7 @@
             transition: background-color 0.3s ease;
         }
 
-        /* ====================================================
-           📌 ヘッダー・メニュー
-           ==================================================== */
+        /* ヘッダー・メニュー */
         header {
             background: var(--header-bg);
             backdrop-filter: blur(10px);
@@ -101,7 +97,6 @@
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            /* 💡 ヘッダーを上部に完全固定 */
             position: fixed;
             top: 0;
             left: 0;
@@ -110,9 +105,8 @@
             transition: background 0.3s ease;
         }
 
-        /* ヘッダーが固定されているため、メインコンテンツがヘッダーの下に隠れないように余白を設ける */
         main {
-            margin-top: 85px; /* ヘッダーの高さに合わせて調整 */
+            margin-top: 85px; 
             flex: 1;
         }
 
@@ -227,7 +221,6 @@
             transform: scale(1.12);
         }
         
-        /* プラットフォームのホバーカラー */
         .fa-spotify:hover { color: #1DB954; }
         .fa-youtube:hover { color: #FF0000; }
         .fa-podcast:hover { color: #a238ff; }
@@ -253,7 +246,6 @@
             margin-bottom: 1.5rem;
         }
 
-        /* 👤 たかねこについて & 🎙️ このポッドキャストについて */
         .profile-content, .about-podcast-content {
             font-size: 1.05rem;
             line-height: 1.8;
@@ -297,21 +289,17 @@
         .form-group {
             margin-bottom: 1.5rem;
         }
-
         label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: bold;
         }
-
         .required {
             color: var(--accent-color);
             font-size: 0.85em;
             margin-left: 0.4em;
         }
-
-        input[type="text"],
-        textarea {
+        input[type="text"], textarea {
             width: 100%;
             padding: 1rem;
             border: 2px solid var(--input-border);
@@ -323,20 +311,16 @@
             color: var(--text-color);
             transition: all 0.3s;
         }
-
-        input[type="text"]:focus,
-        textarea:focus {
+        input[type="text"]:focus, textarea:focus {
             outline: none;
             border-color: var(--accent-color);
             background-color: var(--msg-bg);
             box-shadow: 0 0 0 3px rgba(181, 56, 255, 0.2);
         }
-
         textarea {
             resize: vertical;
             min-height: 180px;
         }
-
         button[type="submit"] {
             background-color: var(--accent-color);
             color: white;
@@ -351,77 +335,31 @@
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(181, 56, 255, 0.3);
         }
-
         button[type="submit"]:hover {
             background-color: #9d29e6;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(181, 56, 255, 0.4);
         }
 
-        button[type="submit"]:disabled {
-            background-color: #a0aec0;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
         #form-status {
-            display: none;
-            padding: 1.2rem;
-            border-radius: 8px;
-            margin-top: 1.5rem;
-            text-align: center;
-            font-weight: bold;
+            display: none; padding: 1.2rem; border-radius: 8px; margin-top: 1.5rem; text-align: center; font-weight: bold;
         }
-        .status-success {
-            background-color: var(--msg-bg);
-            color: var(--success-color);
-            border: 1px solid var(--accent-color);
-        }
-        .status-error {
-            background-color: rgba(255, 235, 238, 0.9);
-            color: #e63946;
-            border: 1px solid #ffcdd2;
-        }
+        .status-success { background-color: var(--msg-bg); color: var(--success-color); border: 1px solid var(--accent-color); }
+        .status-error { background-color: rgba(255, 235, 238, 0.9); color: #e63946; border: 1px solid #ffcdd2; }
 
         #closed-message {
-            text-align: center;
-            color: var(--sub-text-color);
-            padding: 3rem 1.5rem;
-            background: var(--msg-bg);
-            border-radius: 8px;
-            display: none;
-            font-weight: bold;
-            transition: background 0.3s ease;
+            text-align: center; color: var(--sub-text-color); padding: 3rem 1.5rem; background: var(--msg-bg); border-radius: 8px; display: none; font-weight: bold;
         }
-
         #theme-display {
-            background: var(--msg-bg);
-            padding: 1.2rem;
-            border-radius: 8px;
-            border-left: 4px solid var(--accent-color);
-            margin-bottom: 1.8rem;
-            font-weight: bold;
-            transition: background 0.3s ease;
+            background: var(--msg-bg); padding: 1.2rem; border-radius: 8px; border-left: 4px solid var(--accent-color); margin-bottom: 1.8rem; font-weight: bold;
         }
 
         footer {
-            text-align: center;
-            padding: 2rem 1rem;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.7);
-            letter-spacing: 0.05em;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: rgba(255, 255, 255, 0.7); letter-spacing: 0.05em; text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
 
-        /* ページ（タブ）を隠すためのクラス */
-        .page-content {
-            display: none;
-        }
-        
-        .page-content.active {
-            display: block;
-        }
+        .page-content { display: none; }
+        .page-content.active { display: block; }
 
         /* ====================================================
            🎙️ Podcast モーダル（ポップアップ）関連
@@ -440,12 +378,10 @@
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-
         .modal-overlay.active {
             opacity: 1;
             visibility: visible;
         }
-
         .modal-content {
             background: var(--card-bg);
             width: 90%;
@@ -458,7 +394,6 @@
             max-height: 85vh;
             overflow-y: auto;
         }
-
         .modal-close {
             position: absolute;
             top: 15px; right: 15px;
@@ -469,11 +404,9 @@
         .modal-close:hover {
             color: var(--accent-color);
         }
-
         .modal-choices {
             display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;
         }
-
         .modal-btn {
             background: var(--input-bg);
             color: var(--text-color);
@@ -484,46 +417,32 @@
             cursor: pointer;
             font-size: 1.1rem;
             transition: all 0.3s ease;
-            box-shadow: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-
         .modal-btn:hover {
-            background: var(--accent-color);
-            color: white;
-            transform: translateY(-2px);
+            background: var(--accent-color); color: white; transform: translateY(-2px);
         }
-
         .modal-back-btn {
-            background: transparent;
-            border: 1px solid var(--sub-text-color);
-            color: var(--sub-text-color);
-            padding: 0.5rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 1.5rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            background: transparent; border: 1px solid var(--sub-text-color); color: var(--sub-text-color);
+            padding: 0.5rem 1.5rem; border-radius: 8px; cursor: pointer; margin-top: 1.5rem; font-weight: bold; transition: all 0.3s ease;
         }
-
         .modal-back-btn:hover {
-            background: var(--sub-text-color);
-            color: white;
+            background: var(--sub-text-color); color: white;
         }
 
-        /* ブラウザ再生用のエピソードリスト */
+        /* ====================================================
+           🎧 カスタムオーディオプレイヤーのデザイン
+           ==================================================== */
         .episode-item {
             text-align: left;
             background: var(--input-bg);
-            padding: 1rem;
+            padding: 1.2rem;
             border-radius: 8px;
             margin-bottom: 1rem;
             border: 1px solid var(--input-border);
+            user-select: none; /* テキスト選択禁止（ダウンロード対策） */
+            -webkit-user-select: none;
         }
-
         .episode-title {
             font-weight: bold;
             font-size: 0.95rem;
@@ -531,12 +450,68 @@
             color: var(--text-color);
             line-height: 1.4;
         }
-
-        .episode-audio {
-            width: 100%;
-            height: 40px;
+        .custom-player {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--card-bg);
+            padding: 10px 15px;
+            border-radius: 50px;
+            border: 1px solid var(--input-border);
         }
-
+        .play-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(181, 56, 255, 0.3);
+        }
+        .play-btn:hover {
+            transform: scale(1.1);
+            background-color: #9d29e6;
+        }
+        .progress-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .progress-bar {
+            width: 100%;
+            -webkit-appearance: none;
+            background: transparent;
+            margin: 0;
+        }
+        .progress-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 12px; width: 12px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            margin-top: -4px;
+        }
+        .progress-bar::-webkit-slider-runnable-track {
+            width: 100%; height: 4px;
+            cursor: pointer;
+            background: var(--input-border);
+            border-radius: 2px;
+        }
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--sub-text-color);
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
@@ -559,13 +534,10 @@
     </header>
 
     <main>
-        <!-- ==============================================
-             トップページ （初期表示）
-             ============================================== -->
+        <!-- トップページ -->
         <div id="page-top" class="page-content active">
             <section id="top" class="hero">
                 <h1 class="hero-main-title">たかねこPodcast</h1>
-                
                 <div class="hero-sub-title">supported by たかねこちゃんねる技術部</div>
                 
                 <p>最新エピソードはこちらのプラットフォームから配信中！</p>
@@ -588,16 +560,12 @@
             </section>
         </div>
 
-        <!-- ==============================================
-             お便り ページ （別タブ）
-             ============================================== -->
+        <!-- お便り ページ -->
         <div id="page-contact" class="page-content">
             <section id="contact">
                 <div class="card">
                     <h2>お便りを送る</h2>
-                    
                     <div id="theme-display"></div>
-                    
                     <div id="closed-message">
                         現在、お便りの募集は終了しました！次回の募集もよろしくお願いします！<br>アンケートを送ってくださった皆さんありがとうございました！
                     </div>
@@ -607,12 +575,10 @@
                             <label for="podcast-name">ポッドキャストネーム <span class="required">*必須</span></label>
                             <input type="text" id="podcast-name" required placeholder="例：たかねこ">
                         </div>
-                        
                         <div class="form-group">
                             <label for="letter-content">お便りの内容 <span class="required">*必須</span></label>
                             <textarea id="letter-content" required placeholder="テーマの回答や、質問・感想など自由にお書きください！"></textarea>
                         </div>
-                        
                         <button type="submit" id="submit-btn">この内容でお便りを送る</button>
                         <div id="form-status"></div>
                     </form>
@@ -620,9 +586,7 @@
             </section>
         </div>
 
-        <!-- ==============================================
-             たかねこについて ページ （別タブ）
-             ============================================== -->
+        <!-- たかねこについて ページ -->
         <div id="page-about" class="page-content">
             <section id="about">
                 <div class="card">
@@ -647,14 +611,11 @@
         </div>
     </main>
 
-    <!-- ==============================================
-         🎙️ Podcastを聞く モーダル（ポップアップ）
-         ============================================== -->
+    <!-- Podcastを聞く モーダル -->
     <div class="modal-overlay" id="listen-modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeListenModal()"><i class="fa-solid fa-xmark"></i></button>
             
-            <!-- Step 1: 選択画面 -->
             <div id="listen-step1">
                 <h2 style="margin-top:0; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 0.4rem;">どこで聴きますか？</h2>
                 <div class="modal-choices">
@@ -663,7 +624,6 @@
                 </div>
             </div>
 
-            <!-- Step 2: ストリーミングサービス -->
             <div id="listen-streaming" style="display:none;">
                 <h2 style="margin-top:0; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 0.4rem;">ストリーミングサービス</h2>
                 <div class="platform-links" style="margin-top: 2rem; margin-bottom: 1.5rem;">
@@ -674,13 +634,11 @@
                 <button class="modal-back-btn" onclick="showListenStep('step1')">戻る</button>
             </div>
 
-            <!-- Step 3: ブラウザで聴く (RSS自動取得とプレーヤー) -->
             <div id="listen-browser" style="display:none;">
                 <h2 style="margin-top:0; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 0.4rem;">ブラウザで聴く</h2>
                 <p style="font-size: 0.95rem; margin-bottom: 1rem;">最新のエピソードを直接再生できます！</p>
                 
-                <!-- 取得したエピソード一覧が表示される場所 -->
-                <div id="podcast-player-container" style="max-height: 300px; overflow-y: auto; padding-right: 5px;"></div>
+                <div id="podcast-player-container" style="max-height: 400px; overflow-y: auto; padding-right: 5px;"></div>
                 
                 <button class="modal-back-btn" onclick="showListenStep('step1')" style="margin-top: 20px;">戻る</button>
             </div>
@@ -693,23 +651,20 @@
 
     <script>
         // ==============================================================
-        // ⚙️ 設定エリア（ここを変更して管理します）
+        // ⚙️ 設定エリア
         // ==============================================================
         const isAcceptingLetters = true; 
         const currentTheme = "れーにち、たかねこに聞きたいこと、相談したいことなど大募集！！なんでもお気軽に送ってください！！";
         const targetEmailAddress = "takanekopodcast@outlook.jp"; 
 
-        // 💡 PodcastのRSS URLをここに設定してください
-        // ※ 例: Spotify for Podcasters等で発行されるRSSフィードURL
+        // 💡 PodcastのRSS URLを設定してください
         const podcastRssUrl = "https://anchor.fm/s/1167d87c0/podcast/rss"; 
         // ==============================================================
 
-        // 🚀 タブ（ページ）切り替えのルーティング処理
+        // タブ切り替え
         function router() {
             const hash = window.location.hash;
             const pages = document.querySelectorAll('.page-content');
-            
-            // 全てのページを一旦非表示にする
             pages.forEach(page => page.classList.remove('active'));
 
             if (hash === '#about') {
@@ -717,25 +672,19 @@
             } else if (hash === '#contact') {
                 document.getElementById('page-contact').classList.add('active');
             } else {
-                // デフォルトはトップページ (#top または ハッシュなし)
                 document.getElementById('page-top').classList.add('active');
             }
-            
-            // ページ上部にスクロール
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
         window.addEventListener('hashchange', router);
 
         document.addEventListener('DOMContentLoaded', () => {
             router();
-
             const themeDisplay = document.getElementById('theme-display');
             const letterForm = document.getElementById('letter-form');
             const closedMessage = document.getElementById('closed-message');
 
             themeDisplay.textContent = currentTheme;
-
             if (isAcceptingLetters) {
                 letterForm.style.display = 'block';
                 closedMessage.style.display = 'none';
@@ -746,21 +695,17 @@
                 themeDisplay.style.display = 'none';
             }
 
-            // 🌙 ダークモードの初期設定
             const savedTheme = localStorage.getItem('theme');
             const themeToggleBtn = document.getElementById('theme-toggle');
-            
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
                 themeToggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
             }
         });
 
-        // 🌙 ダークモード切り替え処理
         document.getElementById('theme-toggle').addEventListener('click', () => {
             const body = document.body;
             const btn = document.getElementById('theme-toggle');
-            
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
                 localStorage.setItem('theme', 'light');
@@ -773,17 +718,22 @@
         });
 
         // ==============================================================
-        // 🎙️ Podcast モーダル機能 ＆ RSS取得処理
+        // 🎙️ Podcast モーダル機能 ＆ カスタム再生処理
         // ==============================================================
-        let isRssFetched = false; // 連続でAPIを叩かないためのフラグ
+        let isRssFetched = false; 
+        let currentPlayingAudio = null; // 現在再生中のオーディオを管理
 
         function openListenModal() {
             document.getElementById('listen-modal').classList.add('active');
-            showListenStep('step1'); // 最初は必ず選択画面から
+            showListenStep('step1');
         }
 
         function closeListenModal() {
             document.getElementById('listen-modal').classList.remove('active');
+            // モーダルを閉じるときに再生中の音声を停止する
+            if(currentPlayingAudio) {
+                currentPlayingAudio.pause();
+            }
         }
 
         function showListenStep(step) {
@@ -791,13 +741,19 @@
             document.getElementById('listen-streaming').style.display = (step === 'streaming') ? 'block' : 'none';
             document.getElementById('listen-browser').style.display = (step === 'browser') ? 'block' : 'none';
 
-            // ブラウザ再生が選ばれたら自動でRSSを取得する
             if (step === 'browser' && !isRssFetched) {
                 fetchPodcastRSS();
             }
         }
 
-        // 外部のRSSをパースするためのAPI(rss2json)を利用してブラウザ再生を実現
+        // 時間表記のフォーマット(秒 -> 分:秒)
+        function formatTime(seconds) {
+            if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
         async function fetchPodcastRSS() {
             const container = document.getElementById('podcast-player-container');
             
@@ -809,7 +765,6 @@
             container.innerHTML = '<p style="margin-top:1rem;">エピソードを読み込み中...</p>';
             
             try {
-                // rss2json APIを用いてRSSフィードを取得
                 const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(podcastRssUrl)}`;
                 const response = await fetch(apiUrl);
                 const data = await response.json();
@@ -819,27 +774,107 @@
                 }
                 
                 let html = '<div style="margin-top: 1rem;">';
-                const episodes = data.items.slice(0, 5); // 最新の5件を表示
+                const episodes = data.items.slice(0, 5); 
                 
                 if (episodes.length === 0) {
                     html += '<p>エピソードが見つかりませんでした。</p>';
                 } else {
-                    episodes.forEach(ep => {
+                    // oncontextmenu="return false;" で右クリックからのダウンロードを防止
+                    episodes.forEach((ep, index) => {
                         let audioUrl = ep.enclosure ? ep.enclosure.link : '';
                         html += `
-                            <div class="episode-item">
+                            <div class="episode-item" oncontextmenu="return false;">
                                 <div class="episode-title">${ep.title}</div>
-                                ${audioUrl ? `<audio class="episode-audio" controls src="${audioUrl}"></audio>` : '<p style="font-size:0.85rem; color:#e63946;">音声データがありません</p>'}
+                                ${audioUrl ? `
+                                    <div class="custom-player">
+                                        <audio id="audio-${index}" src="${audioUrl}" preload="metadata" controlsList="nodownload"></audio>
+                                        <button class="play-btn" data-id="${index}"><i class="fa-solid fa-play"></i></button>
+                                        <div class="progress-container">
+                                            <input type="range" class="progress-bar" id="progress-${index}" value="0" max="100">
+                                            <div class="time-display">
+                                                <span id="current-${index}">0:00</span>
+                                                <span id="duration-${index}">0:00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ` : '<p style="font-size:0.85rem; color:#e63946;">音声データがありません</p>'}
                             </div>
                         `;
                     });
                 }
                 html += '</div>';
                 container.innerHTML = html;
-                isRssFetched = true; // 取得完了フラグを立てる
+                isRssFetched = true; 
+
+                // カスタムプレイヤーの制御を設定
+                initCustomPlayers(episodes.length);
                 
             } catch (error) {
                 container.innerHTML = `<p style="color: #e63946; margin-top:1rem;">エラーが発生しました: ${error.message}</p>`;
+            }
+        }
+
+        // カスタムプレイヤーのJSロジック
+        function initCustomPlayers(count) {
+            for(let i=0; i<count; i++) {
+                const audio = document.getElementById(`audio-${i}`);
+                if(!audio) continue;
+
+                const playBtn = document.querySelector(`.play-btn[data-id="${i}"]`);
+                const playIcon = playBtn.querySelector('i');
+                const progressBar = document.getElementById(`progress-${i}`);
+                const currentText = document.getElementById(`current-${i}`);
+                const durationText = document.getElementById(`duration-${i}`);
+
+                // 音声データが読み込まれたら長さをセット
+                audio.addEventListener('loadedmetadata', () => {
+                    if(isFinite(audio.duration)) {
+                        progressBar.max = Math.floor(audio.duration);
+                        durationText.textContent = formatTime(audio.duration);
+                    }
+                });
+
+                // 再生/一時停止ボタンのクリック
+                playBtn.addEventListener('click', () => {
+                    if (audio.paused) {
+                        // 他の再生中の音声を一時停止する
+                        if (currentPlayingAudio && currentPlayingAudio !== audio) {
+                            currentPlayingAudio.pause();
+                            document.querySelectorAll('.play-btn i').forEach(icon => {
+                                icon.className = 'fa-solid fa-play';
+                            });
+                        }
+                        audio.play();
+                        playIcon.className = 'fa-solid fa-pause';
+                        currentPlayingAudio = audio;
+                    } else {
+                        audio.pause();
+                        playIcon.className = 'fa-solid fa-play';
+                    }
+                });
+
+                // 再生時間の更新
+                audio.addEventListener('timeupdate', () => {
+                    // 一部のストリーミングはメタデータ読み込みが遅いためここで補正
+                    if (progressBar.max === "100" && isFinite(audio.duration)) {
+                        progressBar.max = Math.floor(audio.duration);
+                        durationText.textContent = formatTime(audio.duration);
+                    }
+                    progressBar.value = Math.floor(audio.currentTime);
+                    currentText.textContent = formatTime(audio.currentTime);
+                });
+
+                // シークバーの操作
+                progressBar.addEventListener('input', () => {
+                    audio.currentTime = progressBar.value;
+                });
+
+                // 最後まで再生されたらアイコンを戻す
+                audio.addEventListener('ended', () => {
+                    playIcon.className = 'fa-solid fa-play';
+                    progressBar.value = 0;
+                    currentText.textContent = "0:00";
+                });
             }
         }
 
