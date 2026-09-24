@@ -15,12 +15,6 @@
             src: url('GenEiLateMinP_v2.ttf') format('truetype');
         }
 
-        /* たかねこ辞典ボタン専用フォント設定 */
-        @font-face {
-            font-family: 'KeiFont';
-            src: url('keifont.ttf') format('truetype');
-        }
-
         :root {
             /* 🌞 ライトモード時のカラーパレット */
             --bg-color: #1a0b2e;
@@ -34,7 +28,6 @@
             --input-border: #e2e8f0;
             --overlay-color: rgba(30, 10, 50, 0.45);
             --msg-bg: rgba(248, 240, 255, 0.9);
-            --dict-text-color: #000000;
         }
 
         /* 🌙 ダークモード時のカラーパレット */
@@ -48,7 +41,6 @@
             --input-border: #4a306d;
             --overlay-color: rgba(10, 5, 20, 0.7);
             --msg-bg: rgba(30, 15, 50, 0.9);
-            --dict-text-color: #ffffff;
         }
 
         body {
@@ -144,16 +136,6 @@
 
         nav a:hover {
             color: var(--accent-color);
-        }
-
-        .dict-link {
-            font-family: 'KeiFont', sans-serif;
-            font-size: 1.1rem;
-            color: var(--dict-text-color) !important; 
-        }
-
-        .dict-link:hover {
-            opacity: 0.7;
         }
 
         .theme-toggle-btn {
@@ -523,7 +505,7 @@
         </div>
         <nav>
             <a href="javascript:void(0)" onclick="openListenModal()">Podcastを聞く</a>
-            <a href="https://takanekoarchive.vercel.app/" target="_blank" class="dict-link">たかねこ辞典</a>
+            <a href="https://takaneko.vercel.app/#" target="_blank">たかねこちゃんねる公式サイト</a>
             <a href="#top">トップ</a>
             <a href="#contact">お便り</a>
             <a href="#about">たかねこについて</a>
@@ -654,11 +636,11 @@
         // ⚙️ 設定エリア
         // ==============================================================
         const isAcceptingLetters = true; 
-        const currentTheme = "出演者に聞きたいこと、相談したいことなどお便りを大募集！なんでもお待ちしてます！！";
+        const currentTheme = "れーにち、たかねこに聞きたいこと、相談したいことなど大募集！！なんでもお気軽に送ってください！！";
         const targetEmailAddress = "takanekopodcast@outlook.jp"; 
 
         // 💡 PodcastのRSS URLを設定してください
-        const podcastRssUrl = "https://anchor.fm/s/1167d87c0/podcast/rss"; 
+        const podcastRssUrl = ""; 
         // ==============================================================
 
         // タブ切り替え
