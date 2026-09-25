@@ -333,7 +333,7 @@
             text-align: center; color: var(--sub-text-color); padding: 3rem 1.5rem; background: var(--msg-bg); border-radius: 8px; display: none; font-weight: bold;
         }
         #theme-display {
-            background: var(--msg-bg); padding: 1.2rem; border-radius: 8px; border-left: 4px solid var(--accent-color); margin-bottom: 1.8rem; font-weight: bold;
+            background: var(--msg-bg); padding: 1.2rem; border-radius: 8px; border-left: 4px solid var(--accent-color); margin-bottom: 1.8rem; font-weight: bold; display: none;
         }
 
         footer {
@@ -412,9 +412,7 @@
             background: var(--sub-text-color); color: white;
         }
 
-        /* ====================================================
-           🎧 カスタムオーディオプレイヤーのデザイン
-           ==================================================== */
+        /* カスタムオーディオプレイヤーのデザイン */
         .episode-item {
             text-align: left;
             background: var(--input-bg);
@@ -422,7 +420,7 @@
             border-radius: 8px;
             margin-bottom: 1rem;
             border: 1px solid var(--input-border);
-            user-select: none; /* テキスト選択禁止（ダウンロード対策） */
+            user-select: none; 
             -webkit-user-select: none;
         }
         .episode-title {
@@ -549,10 +547,11 @@
                     <h2>お便りを送る</h2>
                     <div id="theme-display"></div>
                     <div id="closed-message">
-                        現在、お便りの募集は終了しました！次回の募集もよろしくお願いします！<br>アンケートを送ってくださった皆さんありがとうございました！
+                        <!-- ここはデフォルトでは非表示。Firebaseからデータが来なかった時用の仮テキスト -->
+                        現在、データを取得中です...
                     </div>
 
-                    <form id="letter-form">
+                    <form id="letter-form" style="display:none;">
                         <div class="form-group">
                             <label for="podcast-name">ポッドキャストネーム <span class="required">*必須</span></label>
                             <input type="text" id="podcast-name" required placeholder="例：たかねこ">
@@ -631,19 +630,37 @@
         <p>© たかねこちゃんねる技術部</p>
     </footer>
 
+    <!-- Firebase SDKの読み込み（v9 compat版） -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
     <script>
         // ==============================================================
         // ⚙️ 設定エリア
         // ==============================================================
-        const isAcceptingLetters = true; 
-        const currentTheme = "たかねこに相談、質問したいことなどをなんでも大募集！";
         const targetEmailAddress = "takanekopodcast@outlook.jp"; 
-
-        // 💡 PodcastのRSS URLを設定してください
         const podcastRssUrl = "https://anchor.fm/s/1167d87c0/podcast/rss"; 
+
+        // 🚨 【重要】Firebase Config 🚨
+        // ここにFirebaseコンソールで取得した設定情報を貼り付けてください。
+        // プロジェクト設定 ＞ マイアプリ ＞ SDK の設定および構成
+        const firebaseConfig = {
+  apiKey: "AIzaSyBf8wiWgROlJt21DV1xGqRhPthKEF42YH4",
+  authDomain: "takanekopodcast.firebaseapp.com",
+  databaseURL: "https://takanekopodcast-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "takanekopodcast",
+  storageBucket: "takanekopodcast.firebasestorage.app",
+  messagingSenderId: "726202760676",
+  appId: "1:726202760676:web:bd2471cfd3d65fe1011bf1",
+  measurementId: "G-84VDGNNQMM"
+};
         // ==============================================================
 
-        // タブ切り替え
+        // 🚀 Firebaseの初期化
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 🚀 タブ（ページ）切り替えのルーティング処理
         function router() {
             const hash = window.location.hash;
             const pages = document.querySelectorAll('.page-content');
@@ -662,29 +679,57 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             router();
-            const themeDisplay = document.getElementById('theme-display');
-            const letterForm = document.getElementById('letter-form');
-            const closedMessage = document.getElementById('closed-message');
 
-            themeDisplay.textContent = currentTheme;
-            if (isAcceptingLetters) {
-                letterForm.style.display = 'block';
-                closedMessage.style.display = 'none';
-                themeDisplay.style.display = 'block';
-            } else {
-                letterForm.style.display = 'none';
-                closedMessage.style.display = 'block';
-                themeDisplay.style.display = 'none';
-            }
-
+            // 🌙 ダークモードの初期設定
             const savedTheme = localStorage.getItem('theme');
             const themeToggleBtn = document.getElementById('theme-toggle');
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
                 themeToggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
             }
+
+            // 📡 Firebaseからお便りの設定をリアルタイムで取得する
+            const themeDisplay = document.getElementById('theme-display');
+            const letterForm = document.getElementById('letter-form');
+            const closedMessage = document.getElementById('closed-message');
+
+            const settingsRef = db.ref('podcastSettings');
+            
+            // on()を使うことでデータベースが更新されると自動でここが走ります
+            settingsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                
+                // データが存在しない場合のフォールバック（エラー防止）
+                if(!data) {
+                    closedMessage.innerHTML = "現在、サーバーの設定を取得できません。<br>しばらくお待ちください。";
+                    closedMessage.style.display = 'block';
+                    return;
+                }
+
+                // テーマ文言の更新
+                if(data.currentTheme) {
+                    themeDisplay.textContent = data.currentTheme;
+                }
+
+                // 募集ON/OFFの表示切り替え
+                if (data.isAcceptingLetters === true) {
+                    letterForm.style.display = 'block';
+                    closedMessage.style.display = 'none';
+                    themeDisplay.style.display = 'block';
+                } else {
+                    letterForm.style.display = 'none';
+                    closedMessage.innerHTML = "現在、お便りの募集は終了しました！次回の募集もよろしくお願いします！<br>アンケートを送ってくださった皆さんありがとうございました！";
+                    closedMessage.style.display = 'block';
+                    themeDisplay.style.display = 'none';
+                }
+            }, (error) => {
+                console.error("Firebase Database Error: ", error);
+                closedMessage.innerHTML = "サーバーに接続できませんでした。";
+                closedMessage.style.display = 'block';
+            });
         });
 
+        // 🌙 ダークモード切り替え処理
         document.getElementById('theme-toggle').addEventListener('click', () => {
             const body = document.body;
             const btn = document.getElementById('theme-toggle');
@@ -703,7 +748,7 @@
         // 🎙️ Podcast モーダル機能 ＆ カスタム再生処理
         // ==============================================================
         let isRssFetched = false; 
-        let currentPlayingAudio = null; // 現在再生中のオーディオを管理
+        let currentPlayingAudio = null; 
 
         function openListenModal() {
             document.getElementById('listen-modal').classList.add('active');
@@ -712,7 +757,6 @@
 
         function closeListenModal() {
             document.getElementById('listen-modal').classList.remove('active');
-            // モーダルを閉じるときに再生中の音声を停止する
             if(currentPlayingAudio) {
                 currentPlayingAudio.pause();
             }
@@ -728,7 +772,6 @@
             }
         }
 
-        // 時間表記のフォーマット(秒 -> 分:秒)
         function formatTime(seconds) {
             if (isNaN(seconds) || !isFinite(seconds)) return "0:00";
             const m = Math.floor(seconds / 60);
@@ -740,7 +783,7 @@
             const container = document.getElementById('podcast-player-container');
             
             if(!podcastRssUrl) {
-                container.innerHTML = '<p style="color: #e63946; margin-top:1rem;">⚠️ RSS URLが設定されていません。<br>コード下部の設定エリア（podcastRssUrl）にURLを入力してください。</p>';
+                container.innerHTML = '<p style="color: #e63946; margin-top:1rem;">⚠️ RSS URLが設定されていません。</p>';
                 return;
             }
             
@@ -761,7 +804,6 @@
                 if (episodes.length === 0) {
                     html += '<p>エピソードが見つかりませんでした。</p>';
                 } else {
-                    // oncontextmenu="return false;" で右クリックからのダウンロードを防止
                     episodes.forEach((ep, index) => {
                         let audioUrl = ep.enclosure ? ep.enclosure.link : '';
                         html += `
@@ -788,7 +830,6 @@
                 container.innerHTML = html;
                 isRssFetched = true; 
 
-                // カスタムプレイヤーの制御を設定
                 initCustomPlayers(episodes.length);
                 
             } catch (error) {
@@ -796,7 +837,6 @@
             }
         }
 
-        // カスタムプレイヤーのJSロジック
         function initCustomPlayers(count) {
             for(let i=0; i<count; i++) {
                 const audio = document.getElementById(`audio-${i}`);
@@ -808,7 +848,6 @@
                 const currentText = document.getElementById(`current-${i}`);
                 const durationText = document.getElementById(`duration-${i}`);
 
-                // 音声データが読み込まれたら長さをセット
                 audio.addEventListener('loadedmetadata', () => {
                     if(isFinite(audio.duration)) {
                         progressBar.max = Math.floor(audio.duration);
@@ -816,10 +855,8 @@
                     }
                 });
 
-                // 再生/一時停止ボタンのクリック
                 playBtn.addEventListener('click', () => {
                     if (audio.paused) {
-                        // 他の再生中の音声を一時停止する
                         if (currentPlayingAudio && currentPlayingAudio !== audio) {
                             currentPlayingAudio.pause();
                             document.querySelectorAll('.play-btn i').forEach(icon => {
@@ -835,9 +872,7 @@
                     }
                 });
 
-                // 再生時間の更新
                 audio.addEventListener('timeupdate', () => {
-                    // 一部のストリーミングはメタデータ読み込みが遅いためここで補正
                     if (progressBar.max === "100" && isFinite(audio.duration)) {
                         progressBar.max = Math.floor(audio.duration);
                         durationText.textContent = formatTime(audio.duration);
@@ -846,12 +881,10 @@
                     currentText.textContent = formatTime(audio.currentTime);
                 });
 
-                // シークバーの操作
                 progressBar.addEventListener('input', () => {
                     audio.currentTime = progressBar.value;
                 });
 
-                // 最後まで再生されたらアイコンを戻す
                 audio.addEventListener('ended', () => {
                     playIcon.className = 'fa-solid fa-play';
                     progressBar.value = 0;
