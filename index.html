@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>たかねこPodcast supported by たかねこちゃんねる技術部</title>
     
-    <!-- アイコンの読み込み -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -14,9 +13,13 @@
             font-family: 'GenEiLateMinP';
             src: url('GenEiLateMinP_v2.ttf') format('truetype');
         }
+        /* たかねこ辞典ボタン専用フォント設定 */
+        @font-face {
+            font-family: 'KeiFont';
+            src: url('keifont.ttf') format('truetype');
+        }
 
         :root {
-            /* 🌞 ライトモード時のカラーパレット */
             --bg-color: #1a0b2e;
             --text-color: #2b1b3d;
             --accent-color: #b538ff;
@@ -28,9 +31,9 @@
             --input-border: #e2e8f0;
             --overlay-color: rgba(30, 10, 50, 0.45);
             --msg-bg: rgba(248, 240, 255, 0.9);
+            --dict-text-color: #000000;
         }
 
-        /* 🌙 ダークモード時のカラーパレット */
         [data-theme="dark"] {
             --text-color: #e5d4ff;
             --card-bg: rgba(20, 10, 35, 0.85);
@@ -41,6 +44,7 @@
             --input-border: #4a306d;
             --overlay-color: rgba(10, 5, 20, 0.7);
             --msg-bg: rgba(30, 15, 50, 0.9);
+            --dict-text-color: #ffffff;
         }
 
         body {
@@ -57,7 +61,6 @@
             transition: color 0.3s ease;
         }
 
-        /* 背景画像とぼかし */
         body::before {
             content: "";
             position: fixed;
@@ -78,7 +81,6 @@
             transition: background-color 0.3s ease;
         }
 
-        /* ヘッダー・メニュー */
         header {
             background: var(--header-bg);
             backdrop-filter: blur(10px);
@@ -102,396 +104,89 @@
             flex: 1;
         }
 
-        .header-title-container {
-            display: flex;
-            flex-direction: column;
-        }
+        .header-title-container { display: flex; flex-direction: column; }
+        .header-main-title { font-size: 1.4rem; font-weight: bold; line-height: 1.2; }
+        .header-sub-title { font-size: 0.8rem; color: var(--sub-text-color); margin-top: 2px; }
 
-        .header-main-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            line-height: 1.2;
-        }
+        nav { display: flex; align-items: center; flex-wrap: wrap; gap: 1.2rem; }
+        nav a { text-decoration: none; color: var(--text-color); font-weight: bold; transition: color 0.3s; cursor: pointer; }
+        nav a:hover { color: var(--accent-color); }
+        .dict-link { font-family: 'KeiFont', sans-serif; font-size: 1.1rem; color: var(--dict-text-color) !important; }
+        .dict-link:hover { opacity: 0.7; }
+        .theme-toggle-btn { background: none; border: none; color: var(--text-color); font-size: 1.4rem; cursor: pointer; padding: 0; transition: color 0.3s; display: flex; align-items: center; }
+        .theme-toggle-btn:hover { color: var(--accent-color); }
 
-        .header-sub-title {
-            font-size: 0.8rem;
-            color: var(--sub-text-color);
-            margin-top: 2px;
-        }
+        section { padding: 3.5rem 1.5rem; max-width: 750px; margin: 0 auto; }
 
-        nav {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1.2rem;
-        }
+        .hero { text-align: center; padding: 5rem 1.5rem; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.6); }
+        .hero-main-title { font-size: 2.6rem; font-weight: bold; margin: 0; line-height: 1.2; }
+        .hero-sub-title { font-size: 1.15rem; color: #e5d4ff; margin-top: 0.8rem; margin-bottom: 2rem; text-shadow: 0 1px 5px rgba(0,0,0,0.6); }
 
-        nav a {
-            text-decoration: none;
-            color: var(--text-color);
-            font-weight: bold;
-            transition: color 0.3s;
-            cursor: pointer;
-        }
-
-        nav a:hover {
-            color: var(--accent-color);
-        }
-
-        .theme-toggle-btn {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 1.4rem;
-            cursor: pointer;
-            padding: 0;
-            transition: color 0.3s;
-            display: flex;
-            align-items: center;
-        }
-
-        .theme-toggle-btn:hover {
-            color: var(--accent-color);
-        }
-
-        /* セクション共通 */
-        section {
-            padding: 3.5rem 1.5rem;
-            max-width: 750px;
-            margin: 0 auto;
-        }
-
-        /* トップ */
-        .hero {
-            text-align: center;
-            padding: 5rem 1.5rem;
-            color: #ffffff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.6);
-        }
-
-        .hero-main-title {
-            font-size: 2.6rem;
-            font-weight: bold;
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        .hero-sub-title {
-            font-size: 1.15rem;
-            color: #e5d4ff;
-            margin-top: 0.8rem;
-            margin-bottom: 2rem;
-            text-shadow: 0 1px 5px rgba(0,0,0,0.6);
-        }
-
-        .platform-links {
-            display: flex;
-            justify-content: center;
-            gap: 3.5rem;
-            margin-top: 2.5rem;
-        }
-
-        .platform-links a {
-            font-size: 3.8rem;
-            transition: transform 0.2s ease;
-            display: inline-block;
-            color: #ffffff;
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
-        }
-
-        .platform-links a:hover {
-            transform: scale(1.12);
-        }
-        
+        .platform-links { display: flex; justify-content: center; gap: 3.5rem; margin-top: 2.5rem; }
+        .platform-links a { font-size: 3.8rem; transition: transform 0.2s ease; display: inline-block; color: #ffffff; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4)); }
+        .platform-links a:hover { transform: scale(1.12); }
         .fa-spotify:hover { color: #1DB954; }
         .fa-youtube:hover { color: #FF0000; }
         .fa-podcast:hover { color: #a238ff; }
 
-        /* カード共通 */
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 2.5rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-            margin-bottom: 2rem;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
+        .card { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); margin-bottom: 2rem; transition: background 0.3s ease, color 0.3s ease; }
+        .card h2 { margin-top: 0; font-size: 1.6rem; border-bottom: 2px solid var(--accent-color); padding-bottom: 0.4rem; display: inline-block; margin-bottom: 1.5rem; }
 
-        .card h2 {
-            margin-top: 0;
-            font-size: 1.6rem;
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 0.4rem;
-            display: inline-block;
-            margin-bottom: 1.5rem;
-        }
+        .profile-content, .about-podcast-content { font-size: 1.05rem; line-height: 1.8; }
+        .profile-content { margin-bottom: 2rem; }
 
-        .profile-content, .about-podcast-content {
-            font-size: 1.05rem;
-            line-height: 1.8;
-        }
-        
-        .profile-content {
-            margin-bottom: 2rem;
-        }
-
-        .sns-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .sns-links a {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-            font-size: 1.05rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .sns-links a:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-        }
-
+        .sns-links { display: flex; flex-wrap: wrap; gap: 1rem; }
+        .sns-links a { display: flex; align-items: center; gap: 8px; padding: 0.8rem 1.5rem; border-radius: 8px; text-decoration: none; color: white; font-weight: bold; font-size: 1.05rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .sns-links a:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
         .sns-youtube { background-color: #FF0000; }
         .sns-x { background-color: #14171a; border: 1px solid #333; }
         .sns-tiktok { background-color: #000000; border: 1px solid #444; }
         .sns-tiktok i { color: #fff; text-shadow: 1.5px 1.5px 0 #ff0050, -1.5px -1.5px 0 #00f2fe; }
 
-        /* フォーム */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-        .required {
-            color: var(--accent-color);
-            font-size: 0.85em;
-            margin-left: 0.4em;
-        }
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid var(--input-border);
-            border-radius: 8px;
-            font-family: inherit;
-            box-sizing: border-box;
-            font-size: 1rem;
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            transition: all 0.3s;
-        }
-        input[type="text"]:focus, textarea:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            background-color: var(--msg-bg);
-            box-shadow: 0 0 0 3px rgba(181, 56, 255, 0.2);
-        }
-        textarea {
-            resize: vertical;
-            min-height: 180px;
-        }
-        button[type="submit"] {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            font-size: 1.05rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.3s;
-            width: 100%;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(181, 56, 255, 0.3);
-        }
-        button[type="submit"]:hover {
-            background-color: #9d29e6;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(181, 56, 255, 0.4);
-        }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        .required { color: var(--accent-color); font-size: 0.85em; margin-left: 0.4em; }
+        input[type="text"], textarea { width: 100%; padding: 1rem; border: 2px solid var(--input-border); border-radius: 8px; font-family: inherit; box-sizing: border-box; font-size: 1rem; background-color: var(--input-bg); color: var(--text-color); transition: all 0.3s; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--accent-color); background-color: var(--msg-bg); box-shadow: 0 0 0 3px rgba(181, 56, 255, 0.2); }
+        textarea { resize: vertical; min-height: 180px; }
+        button[type="submit"] { background-color: var(--accent-color); color: white; border: none; padding: 1rem 2rem; font-size: 1.05rem; border-radius: 8px; cursor: pointer; font-family: inherit; transition: all 0.3s; width: 100%; font-weight: bold; box-shadow: 0 4px 15px rgba(181, 56, 255, 0.3); }
+        button[type="submit"]:hover { background-color: #9d29e6; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(181, 56, 255, 0.4); }
 
-        #form-status {
-            display: none; padding: 1.2rem; border-radius: 8px; margin-top: 1.5rem; text-align: center; font-weight: bold;
-        }
+        #form-status { display: none; padding: 1.2rem; border-radius: 8px; margin-top: 1.5rem; text-align: center; font-weight: bold; }
         .status-success { background-color: var(--msg-bg); color: var(--success-color); border: 1px solid var(--accent-color); }
         .status-error { background-color: rgba(255, 235, 238, 0.9); color: #e63946; border: 1px solid #ffcdd2; }
 
-        #closed-message {
-            text-align: center; color: var(--sub-text-color); padding: 3rem 1.5rem; background: var(--msg-bg); border-radius: 8px; display: none; font-weight: bold;
-        }
-        #theme-display {
-            background: var(--msg-bg); padding: 1.2rem; border-radius: 8px; border-left: 4px solid var(--accent-color); margin-bottom: 1.8rem; font-weight: bold; display: none;
-        }
+        #closed-message { text-align: center; color: var(--sub-text-color); padding: 3rem 1.5rem; background: var(--msg-bg); border-radius: 8px; display: none; font-weight: bold; transition: background 0.3s ease; }
+        #theme-display { background: var(--msg-bg); padding: 1.2rem; border-radius: 8px; border-left: 4px solid var(--accent-color); margin-bottom: 1.8rem; font-weight: bold; display: none; }
 
-        footer {
-            text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: rgba(255, 255, 255, 0.7); letter-spacing: 0.05em; text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-        }
+        footer { text-align: center; padding: 2rem 1rem; font-size: 0.75rem; color: rgba(255, 255, 255, 0.7); letter-spacing: 0.05em; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
         .page-content { display: none; }
         .page-content.active { display: block; }
 
-        /* ====================================================
-           🎙️ Podcast モーダル（ポップアップ）関連
-           ==================================================== */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-content {
-            background: var(--card-bg);
-            width: 90%;
-            max-width: 550px;
-            padding: 2.5rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            position: relative;
-            text-align: center;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-        .modal-close {
-            position: absolute;
-            top: 15px; right: 15px;
-            background: none; border: none;
-            font-size: 1.5rem; color: var(--sub-text-color);
-            cursor: pointer; padding: 0; width: auto; box-shadow: none;
-        }
-        .modal-close:hover {
-            color: var(--accent-color);
-        }
-        .modal-choices {
-            display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;
-        }
-        .modal-btn {
-            background: var(--input-bg);
-            color: var(--text-color);
-            border: 2px solid var(--accent-color);
-            padding: 1rem;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .modal-btn:hover {
-            background: var(--accent-color); color: white; transform: translateY(-2px);
-        }
-        .modal-back-btn {
-            background: transparent; border: 1px solid var(--sub-text-color); color: var(--sub-text-color);
-            padding: 0.5rem 1.5rem; border-radius: 8px; cursor: pointer; margin-top: 1.5rem; font-weight: bold; transition: all 0.3s ease;
-        }
-        .modal-back-btn:hover {
-            background: var(--sub-text-color); color: white;
-        }
+        /* モーダル関連 */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 2000; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content { background: var(--card-bg); width: 90%; max-width: 550px; padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); position: relative; text-align: center; max-height: 85vh; overflow-y: auto; }
+        .modal-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5rem; color: var(--sub-text-color); cursor: pointer; padding: 0; width: auto; box-shadow: none; }
+        .modal-close:hover { color: var(--accent-color); }
+        .modal-choices { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+        .modal-btn { background: var(--input-bg); color: var(--text-color); border: 2px solid var(--accent-color); padding: 1rem; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .modal-btn:hover { background: var(--accent-color); color: white; transform: translateY(-2px); }
+        .modal-back-btn { background: transparent; border: 1px solid var(--sub-text-color); color: var(--sub-text-color); padding: 0.5rem 1.5rem; border-radius: 8px; cursor: pointer; margin-top: 1.5rem; font-weight: bold; transition: all 0.3s ease; }
+        .modal-back-btn:hover { background: var(--sub-text-color); color: white; }
 
-        /* カスタムオーディオプレイヤーのデザイン */
-        .episode-item {
-            text-align: left;
-            background: var(--input-bg);
-            padding: 1.2rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border: 1px solid var(--input-border);
-            user-select: none; 
-            -webkit-user-select: none;
-        }
-        .episode-title {
-            font-weight: bold;
-            font-size: 0.95rem;
-            margin-bottom: 10px;
-            color: var(--text-color);
-            line-height: 1.4;
-        }
-        .custom-player {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: var(--card-bg);
-            padding: 10px 15px;
-            border-radius: 50px;
-            border: 1px solid var(--input-border);
-        }
-        .play-btn {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 8px rgba(181, 56, 255, 0.3);
-        }
-        .play-btn:hover {
-            transform: scale(1.1);
-            background-color: #9d29e6;
-        }
-        .progress-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-        .progress-bar {
-            width: 100%;
-            -webkit-appearance: none;
-            background: transparent;
-            margin: 0;
-        }
-        .progress-bar::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 12px; width: 12px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            cursor: pointer;
-            margin-top: -4px;
-        }
-        .progress-bar::-webkit-slider-runnable-track {
-            width: 100%; height: 4px;
-            cursor: pointer;
-            background: var(--input-border);
-            border-radius: 2px;
-        }
-        .time-display {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: var(--sub-text-color);
-            font-family: monospace;
-        }
+        /* カスタムオーディオプレイヤー */
+        .episode-item { text-align: left; background: var(--input-bg); padding: 1.2rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--input-border); user-select: none; -webkit-user-select: none; }
+        .episode-title { font-weight: bold; font-size: 0.95rem; margin-bottom: 10px; color: var(--text-color); line-height: 1.4; }
+        .custom-player { display: flex; align-items: center; gap: 15px; background: var(--card-bg); padding: 10px 15px; border-radius: 50px; border: 1px solid var(--input-border); }
+        .play-btn { background-color: var(--accent-color); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.1rem; flex-shrink: 0; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(181, 56, 255, 0.3); }
+        .play-btn:hover { transform: scale(1.1); background-color: #9d29e6; }
+        .progress-container { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+        .progress-bar { width: 100%; -webkit-appearance: none; background: transparent; margin: 0; }
+        .progress-bar::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: var(--accent-color); cursor: pointer; margin-top: -4px; }
+        .progress-bar::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--input-border); border-radius: 2px; }
+        .time-display { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--sub-text-color); font-family: monospace; }
     </style>
 </head>
 <body>
@@ -547,7 +242,6 @@
                     <h2>お便りを送る</h2>
                     <div id="theme-display"></div>
                     <div id="closed-message">
-                        <!-- ここはデフォルトでは非表示。Firebaseからデータが来なかった時用の仮テキスト -->
                         現在、データを取得中です...
                     </div>
 
@@ -577,15 +271,9 @@
                         <p>最新情報は以下の各SNSからチェック！</p>
                     </div>
                     <div class="sns-links">
-                        <a href="https://youtube.com/@takaneko_ch?si=AG9Kqsd4LJyKWwua" target="_blank" class="sns-youtube">
-                            <i class="fa-brands fa-youtube"></i> YouTube
-                        </a>
-                        <a href="https://x.com/takaneko_ch?s=20" target="_blank" class="sns-x">
-                            <i class="fa-brands fa-x-twitter"></i> X (Twitter)
-                        </a>
-                        <a href="https://www.tiktok.com/@takaneko_ch?is_from_webapp=1&sender_device=pc" target="_blank" class="sns-tiktok">
-                            <i class="fa-brands fa-tiktok"></i> TikTok
-                        </a>
+                        <a href="https://youtube.com/@takaneko_ch?si=AG9Kqsd4LJyKWwua" target="_blank" class="sns-youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>
+                        <a href="https://x.com/takaneko_ch?s=20" target="_blank" class="sns-x"><i class="fa-brands fa-x-twitter"></i> X (Twitter)</a>
+                        <a href="https://www.tiktok.com/@takaneko_ch?is_from_webapp=1&sender_device=pc" target="_blank" class="sns-tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>
                     </div>
                 </div>
             </section>
@@ -596,7 +284,6 @@
     <div class="modal-overlay" id="listen-modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeListenModal()"><i class="fa-solid fa-xmark"></i></button>
-            
             <div id="listen-step1">
                 <h2 style="margin-top:0; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 0.4rem;">どこで聴きますか？</h2>
                 <div class="modal-choices">
@@ -604,7 +291,6 @@
                     <button class="modal-btn" onclick="showListenStep('browser')"><i class="fa-solid fa-globe"></i> ブラウザで直接聴く</button>
                 </div>
             </div>
-
             <div id="listen-streaming" style="display:none;">
                 <h2 style="margin-top:0; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 0.4rem;">ストリーミングサービス</h2>
                 <div class="platform-links" style="margin-top: 2rem; margin-bottom: 1.5rem;">
@@ -614,13 +300,10 @@
                 </div>
                 <button class="modal-back-btn" onclick="showListenStep('step1')">戻る</button>
             </div>
-
             <div id="listen-browser" style="display:none;">
                 <h2 style="margin-top:0; border-bottom: 2px solid var(--accent-color); display: inline-block; padding-bottom: 0.4rem;">ブラウザで聴く</h2>
                 <p style="font-size: 0.95rem; margin-bottom: 1rem;">最新のエピソードを直接再生できます！</p>
-                
                 <div id="podcast-player-container" style="max-height: 400px; overflow-y: auto; padding-right: 5px;"></div>
-                
                 <button class="modal-back-btn" onclick="showListenStep('step1')" style="margin-top: 20px;">戻る</button>
             </div>
         </div>
@@ -630,7 +313,7 @@
         <p>© たかねこちゃんねる技術部</p>
     </footer>
 
-    <!-- Firebase SDKの読み込み（v9 compat版） -->
+    <!-- Firebase SDKの読み込み -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
@@ -643,8 +326,7 @@
 
         // 🚨 【重要】Firebase Config 🚨
         // ここにFirebaseコンソールで取得した設定情報を貼り付けてください。
-        // プロジェクト設定 ＞ マイアプリ ＞ SDK の設定および構成
-        const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyBf8wiWgROlJt21DV1xGqRhPthKEF42YH4",
   authDomain: "takanekopodcast.firebaseapp.com",
   databaseURL: "https://takanekopodcast-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -660,7 +342,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // 🚀 タブ（ページ）切り替えのルーティング処理
+        // 🚀 タブ（ページ）切り替え
         function router() {
             const hash = window.location.hash;
             const pages = document.querySelectorAll('.page-content');
@@ -680,7 +362,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             router();
 
-            // 🌙 ダークモードの初期設定
+            // ダークモードの初期設定
             const savedTheme = localStorage.getItem('theme');
             const themeToggleBtn = document.getElementById('theme-toggle');
             if (savedTheme === 'dark') {
@@ -692,27 +374,22 @@
             const themeDisplay = document.getElementById('theme-display');
             const letterForm = document.getElementById('letter-form');
             const closedMessage = document.getElementById('closed-message');
-
             const settingsRef = db.ref('podcastSettings');
             
-            // on()を使うことでデータベースが更新されると自動でここが走ります
             settingsRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                
-                // データが存在しない場合のフォールバック（エラー防止）
-                if(!data) {
-                    closedMessage.innerHTML = "現在、サーバーの設定を取得できません。<br>しばらくお待ちください。";
-                    closedMessage.style.display = 'block';
-                    return;
-                }
+                // 💡 修正ポイント：データベースが空(null)の場合でもエラーにならないよう、デフォルト値を設定
+                const data = snapshot.val() || {
+                    isAcceptingLetters: false, 
+                    currentTheme: "現在、テーマを準備中です..."
+                };
 
                 // テーマ文言の更新
                 if(data.currentTheme) {
                     themeDisplay.textContent = data.currentTheme;
                 }
 
-                // 募集ON/OFFの表示切り替え
-                if (data.isAcceptingLetters === true) {
+                // 募集ON/OFFの表示切り替え（文字列の"true"と、真偽値のtrue両方に対応）
+                if (data.isAcceptingLetters === true || data.isAcceptingLetters === "true") {
                     letterForm.style.display = 'block';
                     closedMessage.style.display = 'none';
                     themeDisplay.style.display = 'block';
@@ -724,12 +401,13 @@
                 }
             }, (error) => {
                 console.error("Firebase Database Error: ", error);
-                closedMessage.innerHTML = "サーバーに接続できませんでした。";
+                // 本当に通信エラーの場合のみ表示
+                closedMessage.innerHTML = "サーバーに接続できませんでした。<br>（Firebaseの設定情報が間違っている可能性があります）";
                 closedMessage.style.display = 'block';
             });
         });
 
-        // 🌙 ダークモード切り替え処理
+        // ダークモード切り替え
         document.getElementById('theme-toggle').addEventListener('click', () => {
             const body = document.body;
             const btn = document.getElementById('theme-toggle');
