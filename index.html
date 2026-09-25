@@ -59,6 +59,7 @@
             min-height: 100vh;
             position: relative;
             transition: color 0.3s ease;
+            overflow-x: hidden; /* メニューのスライド用 */
         }
 
         body::before {
@@ -81,6 +82,7 @@
             transition: background-color 0.3s ease;
         }
 
+        /* 📌 ヘッダー・メニュー */
         header {
             background: var(--header-bg);
             backdrop-filter: blur(10px);
@@ -88,33 +90,105 @@
             padding: 1.2rem 2rem;
             box-shadow: 0 2px 15px rgba(0,0,0,0.1);
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             z-index: 1000;
             transition: background 0.3s ease;
-        }
-
-        main {
-            margin-top: 85px; 
-            flex: 1;
         }
 
         .header-title-container { display: flex; flex-direction: column; }
         .header-main-title { font-size: 1.4rem; font-weight: bold; line-height: 1.2; }
         .header-sub-title { font-size: 0.8rem; color: var(--sub-text-color); margin-top: 2px; }
 
-        nav { display: flex; align-items: center; flex-wrap: wrap; gap: 1.2rem; }
-        nav a { text-decoration: none; color: var(--text-color); font-weight: bold; transition: color 0.3s; cursor: pointer; }
-        nav a:hover { color: var(--accent-color); }
-        .dict-link { font-family: 'KeiFont', sans-serif; font-size: 1.1rem; color: var(--dict-text-color) !important; }
-        .dict-link:hover { opacity: 0.7; }
-        .theme-toggle-btn { background: none; border: none; color: var(--text-color); font-size: 1.4rem; cursor: pointer; padding: 0; transition: color 0.3s; display: flex; align-items: center; }
-        .theme-toggle-btn:hover { color: var(--accent-color); }
+        /* 💡 ハンバーガーボタン (三本線) */
+        .hamburger-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0;
+            z-index: 2000;
+            transition: color 0.3s;
+        }
+        .hamburger-btn:hover { color: var(--accent-color); }
+
+        /* 💡 スライドメニュー本体 */
+        .slide-menu {
+            position: fixed;
+            top: 0;
+            right: -300px; /* 初期状態は画面外 */
+            width: 250px;
+            height: 100vh;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+            z-index: 1500;
+            display: flex;
+            flex-direction: column;
+            padding: 5rem 2rem 2rem; /* 上に閉じるボタン用の余白 */
+            box-sizing: border-box;
+            transition: right 0.3s ease;
+        }
+        .slide-menu.active {
+            right: 0; /* アクティブ時に画面内にスライド */
+        }
+        .slide-menu a, .slide-menu button {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--input-border);
+            text-align: left;
+            background: none;
+            border-top: none; border-left: none; border-right: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: color 0.3s;
+            display: block;
+        }
+        .slide-menu a:hover, .slide-menu button:hover {
+            color: var(--accent-color);
+        }
+
+        /* スライドメニュー開閉時の背景カバー */
+        .menu-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1400;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dict-link { font-family: 'KeiFont', sans-serif; }
+
+        .theme-toggle-menu {
+            margin-top: auto;
+            border-bottom: none !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.2rem !important;
+            border-radius: 8px;
+            background-color: var(--input-bg) !important;
+            padding: 0.8rem !important;
+        }
+
+        main {
+            margin-top: 85px; 
+            flex: 1;
+        }
 
         section { padding: 3.5rem 1.5rem; max-width: 750px; margin: 0 auto; }
 
@@ -196,17 +270,25 @@
             <span class="header-main-title">たかねこPodcast</span>
             <span class="header-sub-title">supported by たかねこちゃんねる技術部</span>
         </div>
-        <nav>
-            <a href="javascript:void(0)" onclick="openListenModal()">Podcastを聞く</a>
-            <a href="https://takaneko.vercel.app/#" target="_blank">たかねこちゃんねる公式サイト</a>
-            <a href="#top">トップ</a>
-            <a href="#contact">お便り</a>
-            <a href="#about">たかねこについて</a>
-            <button id="theme-toggle" class="theme-toggle-btn" title="テーマを切り替える">
-                <i class="fa-solid fa-moon"></i>
-            </button>
-        </nav>
+        <!-- 💡 三本線（ハンバーガー）ボタン -->
+        <button class="hamburger-btn" id="menu-btn" onclick="toggleMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
     </header>
+
+    <!-- 💡 スライドメニューとオーバーレイ -->
+    <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
+    <nav class="slide-menu" id="slide-menu">
+        <a href="#top" onclick="toggleMenu()">🏠 トップ</a>
+        <button onclick="openListenModal(); toggleMenu();">🎧 Podcastを聞く</button>
+        <a href="#contact" onclick="toggleMenu()">📩 お便り</a>
+        <a href="#about" onclick="toggleMenu()">👤 たかねこについて</a>
+        <a href="https://takaneko.vercel.app/#" target="_blank" onclick="toggleMenu()" class="dict-link">🌐 公式サイト</a>
+        
+        <button id="theme-toggle" class="theme-toggle-menu" onclick="toggleTheme()" title="テーマを切り替える">
+            <i class="fa-solid fa-moon"></i> ダークモード
+        </button>
+    </nav>
 
     <main>
         <!-- トップページ -->
@@ -325,22 +407,37 @@
         const podcastRssUrl = "https://anchor.fm/s/1167d87c0/podcast/rss"; 
 
         // 🚨 【重要】Firebase Config 🚨
-        // ここにFirebaseコンソールで取得した設定情報を貼り付けてください。
-const firebaseConfig = {
-  apiKey: "AIzaSyBf8wiWgROlJt21DV1xGqRhPthKEF42YH4",
-  authDomain: "takanekopodcast.firebaseapp.com",
-  databaseURL: "https://takanekopodcast-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "takanekopodcast",
-  storageBucket: "takanekopodcast.firebasestorage.app",
-  messagingSenderId: "726202760676",
-  appId: "1:726202760676:web:bd2471cfd3d65fe1011bf1",
-  measurementId: "G-84VDGNNQMM"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyBf8wiWgROlJt21DV1xGqRhPthKEF42YH4",
+            authDomain: "takanekopodcast.firebaseapp.com",
+            databaseURL: "https://takanekopodcast-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "takanekopodcast",
+            storageBucket: "takanekopodcast.firebasestorage.app",
+            messagingSenderId: "726202760676",
+            appId: "1:726202760676:web:bd2471cfd3d65fe1011bf1",
+            measurementId: "G-84VDGNNQMM"
+        };
         // ==============================================================
 
         // 🚀 Firebaseの初期化
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+
+        // 💡 ハンバーガーメニューの開閉処理
+        function toggleMenu() {
+            const menu = document.getElementById('slide-menu');
+            const overlay = document.getElementById('menu-overlay');
+            const btnIcon = document.querySelector('#menu-btn i');
+            
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            
+            if (menu.classList.contains('active')) {
+                btnIcon.className = 'fa-solid fa-xmark';
+            } else {
+                btnIcon.className = 'fa-solid fa-bars';
+            }
+        }
 
         // 🚀 タブ（ページ）切り替え
         function router() {
@@ -364,10 +461,10 @@ const firebaseConfig = {
 
             // ダークモードの初期設定
             const savedTheme = localStorage.getItem('theme');
-            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeBtnIcon = document.querySelector('#theme-toggle i');
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
-                themeToggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+                themeBtnIcon.className = 'fa-solid fa-sun';
             }
 
             // 📡 Firebaseからお便りの設定をリアルタイムで取得する
@@ -377,18 +474,15 @@ const firebaseConfig = {
             const settingsRef = db.ref('podcastSettings');
             
             settingsRef.on('value', (snapshot) => {
-                // 💡 修正ポイント：データベースが空(null)の場合でもエラーにならないよう、デフォルト値を設定
                 const data = snapshot.val() || {
                     isAcceptingLetters: false, 
                     currentTheme: "現在、テーマを準備中です..."
                 };
 
-                // テーマ文言の更新
                 if(data.currentTheme) {
                     themeDisplay.textContent = data.currentTheme;
                 }
 
-                // 募集ON/OFFの表示切り替え（文字列の"true"と、真偽値のtrue両方に対応）
                 if (data.isAcceptingLetters === true || data.isAcceptingLetters === "true") {
                     letterForm.style.display = 'block';
                     closedMessage.style.display = 'none';
@@ -401,26 +495,26 @@ const firebaseConfig = {
                 }
             }, (error) => {
                 console.error("Firebase Database Error: ", error);
-                // 本当に通信エラーの場合のみ表示
                 closedMessage.innerHTML = "サーバーに接続できませんでした。<br>（Firebaseの設定情報が間違っている可能性があります）";
                 closedMessage.style.display = 'block';
             });
         });
 
-        // ダークモード切り替え
-        document.getElementById('theme-toggle').addEventListener('click', () => {
+        // 🌙 ダークモード切り替え処理
+        function toggleTheme() {
             const body = document.body;
-            const btn = document.getElementById('theme-toggle');
+            const btnIcon = document.querySelector('#theme-toggle i');
+            
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
                 localStorage.setItem('theme', 'light');
-                btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+                btnIcon.className = 'fa-solid fa-moon';
             } else {
                 body.setAttribute('data-theme', 'dark');
                 localStorage.setItem('theme', 'dark');
-                btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+                btnIcon.className = 'fa-solid fa-sun';
             }
-        });
+        }
 
         // ==============================================================
         // 🎙️ Podcast モーダル機能 ＆ カスタム再生処理
